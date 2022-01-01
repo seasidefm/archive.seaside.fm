@@ -5,6 +5,16 @@ export interface IArchiveFileStorage {
     getAllFiles(): Promise<unknown>;
 }
 
+export interface ArchiveStreamChunk<
+    S extends NodeJS.ReadableStream = NodeJS.ReadableStream
+> {
+    stream: S;
+    chunkLength: number;
+    start: number;
+    end: number;
+    videoLength: number;
+}
+
 const getGoogleProjectDetails = () => {
     const credentials = process.env.GOOGLE_CREDENTIALS,
         project = process.env.GOOGLE_PROJECT_ID,
@@ -83,7 +93,10 @@ export class ArchiveFileStorage implements IArchiveFileStorage {
         return { meta: (await f.getMetadata())[0], file: f };
     }
 
-    public async getByteChunk(file: string, range: string) {
+    public async getStreamChunk(
+        file: string,
+        range: string
+    ): Promise<ArchiveStreamChunk> {
         const { meta, file: fileData } = await this.getMetaData(file);
 
         const CHUNK_SIZE = 10 ** 6;

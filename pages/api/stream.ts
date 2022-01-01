@@ -13,7 +13,7 @@ export default async function handler(
 
     const storage = new ArchiveFileStorage("streams");
     const { start, end, chunkLength, videoLength, stream } =
-        await storage.getByteChunk("streams/rapture-pt-1.mp4", range);
+        await storage.getStreamChunk("streams/rapture-pt-1.mp4", range);
 
     const headers = {
         "Content-Range": `bytes ${start}-${end}/${videoLength}`,
@@ -22,6 +22,7 @@ export default async function handler(
         "Content-Type": "video/mp4",
     };
 
+    // Set status code, apply headers before streaming data
     res.writeHead(206, headers);
 
     stream.pipe(res);
