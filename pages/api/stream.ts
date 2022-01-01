@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { ArchiveFileStorage } from "../../src/services/backend/archives/fileStorage";
+import { VideoStorage } from "../../src/services/backend/archives/fileStorage";
 
 export default async function handler(
     req: NextApiRequest,
@@ -11,7 +11,7 @@ export default async function handler(
         return res.status(400).send("Range header is required!");
     }
 
-    const storage = new ArchiveFileStorage("streams");
+    const storage = new VideoStorage("streams");
     const { start, end, chunkLength, videoLength, stream } =
         await storage.getStreamChunk("streams/rapture-pt-1.mp4", range);
 

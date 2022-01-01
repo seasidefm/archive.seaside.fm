@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { ArchiveFileStorage } from "../../../src/services/backend/archives/fileStorage";
+import { VideoStorage } from "../../../src/services/backend/archives/fileStorage";
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const storage = new ArchiveFileStorage("streams");
+    const storage = new VideoStorage("streams");
     try {
-        const files = await storage.getAllFiles();
+        const files = await storage.getUnprocessedUploads();
         res.json({ data: files });
     } catch (e) {
         console.error(e);

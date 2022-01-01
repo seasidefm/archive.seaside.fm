@@ -1,8 +1,17 @@
-import { GetSignedUrlConfig, Storage } from "@google-cloud/storage";
-import { Buffer } from "buffer";
+import { Storage } from "@google-cloud/storage";
+import AWS from "aws-sdk";
+import { CredentialsOptions } from "aws-sdk/lib/credentials";
 
-export interface IArchiveFileStorage {
-    getAllFiles(): Promise<unknown>;
+export interface IVideoStorage {
+    getUnprocessedUploads(): Promise<unknown>;
+}
+
+interface StorageBucket {
+    bucketName: string;
+    config: {
+        endpoint: string;
+        credentials: CredentialsOptions;
+    };
 }
 
 export interface ArchiveStreamChunk<
@@ -15,80 +24,77 @@ export interface ArchiveStreamChunk<
     videoLength: number;
 }
 
-const getGoogleProjectDetails = () => {
-    const credentials = process.env.GOOGLE_CREDENTIALS,
-        project = process.env.GOOGLE_PROJECT_ID,
-        archiveBucket = process.env.GOOGLE_ARCHIVE_BUCKET;
+const getStorageConfig = () => {
+    const uploadBucket = process.env.LINODE_S3_UPLOAD_BUCKET,
+        uploadKey = process.env.LINODE_S3_UPLOAD_KEY,
+        uploadSecret = process.env.LINODE_S3_UPLOAD_SECRET,
+        uploadEndpoint = process.env.LINODE_S3_UPLOAD_ENDPOINT;
 
-    if (!credentials) {
-        throw new Error("Cannot access storage, credentials not provided");
+    if (!uploadBucket || !uploadKey || !uploadSecret || !uploadEndpoint) {
+        throw new Error("Cannot find all expected LINODE_S3_* env vars!");
     }
 
-    if (!project) {
-        throw new Error("Cannot find project name, unable to access cloud");
-    }
-
-    if (!archiveBucket) {
-        throw new Error("Cannot find archive bucket, unable to access files");
-    }
+    const unprocessedUploadsBucket: StorageBucket = {
+        bucketName: uploadBucket,
+        config: {
+            endpoint: uploadEndpoint,
+            credentials: {
+                accessKeyId: uploadKey,
+                secretAccessKey: uploadSecret,
+            },
+        },
+    };
 
     return {
-        credentials,
-        project,
-        archiveBucket,
+        unprocessedUploadsBucket,
     };
 };
 
-export class ArchiveFileStorage implements IArchiveFileStorage {
+export class VideoStorage implements IVideoStorage {
     private storage: Storage;
     private readonly path: string;
-    private readonly project: string;
-    private readonly bucket: string;
+    private readonly buckets: Record<"unprocessedUploadsBucket", StorageBucket>;
 
     constructor(path: string) {
-        const { credentials, project, archiveBucket } =
-            getGoogleProjectDetails();
-        const jsonConfig = JSON.parse(
-            Buffer.from(credentials, "base64").toString()
-        );
         this.path = path;
-        this.project = project;
-        this.bucket = archiveBucket;
         this.storage = new Storage({
-            projectId: project,
-            credentials: jsonConfig,
+            projectId: "",
+            credentials: {},
         });
+
+        this.buckets = getStorageConfig();
     }
 
-    public async getAllFiles() {
-        const [files] = await this.storage
-            .bucket(this.bucket)
-            .getFiles({ prefix: this.path });
-
-        return files
-            .map((f) => {
-                return f.name;
+    public async getUnprocessedUploads() {
+        const objectStorage = new AWS.S3(
+            this.buckets.unprocessedUploadsBucket.config
+        );
+        const objects = await objectStorage
+            .listObjects({
+                Bucket: this.buckets.unprocessedUploadsBucket.bucketName,
             })
-            .filter((n) => n != `${this.path}/`);
+            .promise();
+
+        return objects.Contents?.map((f) => f.Key) ?? [];
     }
 
-    public async getFileLink(file: string) {
-        const defaultReadOptions: GetSignedUrlConfig = {
-            version: "v4",
-            action: "read",
-            expires: Date.now() + 60 * 60 * 1000, // 60 minutes
-        };
+    public async getFileLink(_file: string) {
+        // const _defaultReadOptions: GetSignedUrlConfig = {
+        //     version: "v4",
+        //     action: "read",
+        //     expires: Date.now() + 60 * 60 * 1000, // 60 minutes
+        // };
 
-        const [url] = await this.storage
-            .bucket(this.bucket)
-            .file(file)
-            .getSignedUrl(defaultReadOptions);
+        // const [url] = await this.storage
+        //     .bucket(this.bucket)
+        //     .file(file)
+        //     .getSignedUrl(defaultReadOptions);
 
-        return url;
+        return "url";
     }
 
     public async getMetaData(file: string) {
-        const f = this.storage.bucket(this.bucket).file(file);
+        const f = this.storage.bucket("").file(file);
 
         return { meta: (await f.getMetadata())[0], file: f };
     }
