@@ -24,7 +24,12 @@ const Home: NextPage = () => {
                             controls
                             width={"100%"}
                         >
-                            <source src={"/api/stream"} type={"video/mp4"} />
+                            <source
+                                src={
+                                    "/api/stream?v=adb9e62c-fe05-47eb-8d48-dbbfc5a4140f"
+                                }
+                                type={"video/mp4"}
+                            />
                         </video>
                     </div>
                 </div>

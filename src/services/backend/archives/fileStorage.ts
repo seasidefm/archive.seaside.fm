@@ -25,35 +25,59 @@ export interface ArchiveStreamChunk<
 }
 
 const getStorageConfig = () => {
-    const uploadBucket = process.env.LINODE_S3_UPLOAD_BUCKET,
-        uploadKey = process.env.LINODE_S3_UPLOAD_KEY,
-        uploadSecret = process.env.LINODE_S3_UPLOAD_SECRET,
-        uploadEndpoint = process.env.LINODE_S3_UPLOAD_ENDPOINT;
+    const uploadBucketName = process.env.LINODE_S3_UPLOAD_BUCKET,
+        videosBucketName = process.env.LINODE_S3_VIDEOS_BUCKET,
+        s3Key = process.env.LINODE_S3_KEY,
+        s3Secret = process.env.LINODE_S3_SECRET,
+        s3Endpoint = process.env.LINODE_S3_ENDPOINT;
 
-    if (!uploadBucket || !uploadKey || !uploadSecret || !uploadEndpoint) {
+    if (
+        !uploadBucketName ||
+        !videosBucketName ||
+        !s3Key ||
+        !s3Secret ||
+        !s3Endpoint
+    ) {
         throw new Error("Cannot find all expected LINODE_S3_* env vars!");
     }
 
     const unprocessedUploadsBucket: StorageBucket = {
-        bucketName: uploadBucket,
+        bucketName: uploadBucketName,
         config: {
-            endpoint: uploadEndpoint,
+            endpoint: s3Endpoint,
             credentials: {
-                accessKeyId: uploadKey,
-                secretAccessKey: uploadSecret,
+                accessKeyId: s3Key,
+                secretAccessKey: s3Secret,
+            },
+        },
+    };
+
+    const videosBucket: StorageBucket = {
+        bucketName: videosBucketName,
+        config: {
+            endpoint: s3Endpoint,
+            credentials: {
+                accessKeyId: s3Key,
+                secretAccessKey: s3Secret,
             },
         },
     };
 
     return {
         unprocessedUploadsBucket,
+        videosBucket,
     };
 };
 
 export class VideoStorage implements IVideoStorage {
     private storage: Storage;
     private readonly path: string;
-    private readonly buckets: Record<"unprocessedUploadsBucket", StorageBucket>;
+    private readonly buckets: Record<
+        "unprocessedUploadsBucket" | "videosBucket",
+        StorageBucket
+    >;
+    private readonly unprocessed: AWS.S3;
+    private readonly videos: AWS.S3;
 
     constructor(path: string) {
         this.path = path;
@@ -63,6 +87,14 @@ export class VideoStorage implements IVideoStorage {
         });
 
         this.buckets = getStorageConfig();
+
+        this.unprocessed = new AWS.S3({
+            ...this.buckets.unprocessedUploadsBucket.config,
+        });
+
+        this.videos = new AWS.S3({
+            ...this.buckets.videosBucket.config,
+        });
     }
 
     public async getUnprocessedUploads() {
@@ -93,29 +125,56 @@ export class VideoStorage implements IVideoStorage {
         return "url";
     }
 
-    public async getMetaData(file: string) {
-        const f = this.storage.bucket("").file(file);
+    public async getVideoMetaData(file: string) {
+        const s3 = this.videos;
 
-        return { meta: (await f.getMetadata())[0], file: f };
+        console.log(
+            "Getting metadata",
+            file,
+            this.buckets.videosBucket.bucketName
+        );
+        const meta = await s3
+            .headObject({
+                Bucket: this.buckets.videosBucket.bucketName,
+                Key: file,
+            })
+            .promise();
+
+        return {
+            meta: {
+                size: meta.ContentLength,
+            },
+        };
     }
 
     public async getStreamChunk(
         file: string,
         range: string
     ): Promise<ArchiveStreamChunk> {
-        const { meta, file: fileData } = await this.getMetaData(file);
+        console.log(file);
+        const s3 = this.videos;
 
-        const CHUNK_SIZE = 10 ** 6;
+        const { meta } = await this.getVideoMetaData(file);
+
+        if (!meta.size || meta.size == 0) {
+            throw new Error(`Cannot read an empty file! '${file}'`);
+        }
+
+        // Roughly 2MiB
+        const CHUNK_SIZE = 20 ** 6;
         const start = Number(range.replace(/\D/g, ""));
         const end = Math.min(start + CHUNK_SIZE, meta.size - 1);
 
         const chunkLength = end - start + 1;
 
+        const fileChunk = await s3.getObject({
+            Bucket: this.buckets.videosBucket.bucketName,
+            Key: file,
+            Range: `${start}-${end}`,
+        });
+
         return {
-            stream: fileData.createReadStream({
-                start,
-                end,
-            }),
+            stream: fileChunk.createReadStream(),
             chunkLength,
             start,
             end,
