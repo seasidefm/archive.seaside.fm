@@ -28,5 +28,8 @@ export default async function handler(
     // Set status code, apply headers before streaming data
     res.writeHead(206, headers);
 
+    stream.on("end", () => {
+        console.log("Served by Linode S3!");
+    });
     stream.pipe(res);
 }

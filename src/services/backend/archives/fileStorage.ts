@@ -128,11 +128,6 @@ export class VideoStorage implements IVideoStorage {
     public async getVideoMetaData(file: string) {
         const s3 = this.videos;
 
-        console.log(
-            "Getting metadata",
-            file,
-            this.buckets.videosBucket.bucketName
-        );
         const meta = await s3
             .headObject({
                 Bucket: this.buckets.videosBucket.bucketName,
@@ -151,7 +146,6 @@ export class VideoStorage implements IVideoStorage {
         file: string,
         range: string
     ): Promise<ArchiveStreamChunk> {
-        console.log(file);
         const s3 = this.videos;
 
         const { meta } = await this.getVideoMetaData(file);
@@ -161,16 +155,18 @@ export class VideoStorage implements IVideoStorage {
         }
 
         // Roughly 2MiB
-        const CHUNK_SIZE = 20 ** 6;
+        const CHUNK_SIZE = 3_000_000;
         const start = Number(range.replace(/\D/g, ""));
         const end = Math.min(start + CHUNK_SIZE, meta.size - 1);
 
         const chunkLength = end - start + 1;
 
+        console.log(`Serving bytes: ${start}-${end}/${meta.size}`);
+
         const fileChunk = await s3.getObject({
             Bucket: this.buckets.videosBucket.bucketName,
             Key: file,
-            Range: `${start}-${end}`,
+            Range: `bytes=${start}-${end}`,
         });
 
         return {
