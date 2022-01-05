@@ -8,10 +8,12 @@ export interface IVideoStorage {
 
 interface StorageBucket {
     bucketName: string;
-    config: {
-        endpoint: string;
-        credentials: CredentialsOptions;
-    };
+    config: CredentialsOptions &
+        AWS.S3.ClientConfiguration & {
+            endpoint: AWS.Endpoint | string;
+            s3ForcePathStyle?: boolean;
+            signatureVersion?: string;
+        };
 }
 
 export interface ArchiveStreamChunk<
@@ -25,42 +27,44 @@ export interface ArchiveStreamChunk<
 }
 
 const getStorageConfig = () => {
-    const uploadBucketName = process.env.LINODE_S3_UPLOAD_BUCKET,
-        videosBucketName = process.env.LINODE_S3_VIDEOS_BUCKET,
-        s3Key = process.env.LINODE_S3_KEY,
-        s3Secret = process.env.LINODE_S3_SECRET,
-        s3Endpoint = process.env.LINODE_S3_ENDPOINT;
+    const uploadBucketName = process.env.UPLOAD_BUCKET,
+        videosBucketName = process.env.PROCESSED_BUCKET,
+        minioKey = process.env.MINIO_KEY,
+        minioSecret = process.env.MINIO_SECRET,
+        minioEndpoint = process.env.MINIO_ENDPOINT;
+    // UPLOAD_BUCKET = "archive-seasidefm-unprocessed";
+    // PROCESSED_BUCKET = "archive-seasidefm-uploads";
+    // MINIO_KEY = "seasidefm-nextjs-archive";
+    // MINIO_SECRET = "83YCvJKi9DXK9EJ7ew77";
+    // MINIO_ENDPOINT = "http://192.168.64.3:9000";
 
     if (
         !uploadBucketName ||
         !videosBucketName ||
-        !s3Key ||
-        !s3Secret ||
-        !s3Endpoint
+        !minioKey ||
+        !minioSecret ||
+        !minioEndpoint
     ) {
-        throw new Error("Cannot find all expected LINODE_S3_* env vars!");
+        throw new Error("Cannot find all expected MINIO env vars!");
     }
+
+    const sharedConfig = {
+        s3ForcePathStyle: true, // needed with minio?
+        signatureVersion: "v4",
+        region: "us-east-1",
+        endpoint: new AWS.Endpoint(minioEndpoint),
+        accessKeyId: minioKey,
+        secretAccessKey: minioSecret,
+    };
 
     const unprocessedUploadsBucket: StorageBucket = {
         bucketName: uploadBucketName,
-        config: {
-            endpoint: s3Endpoint,
-            credentials: {
-                accessKeyId: s3Key,
-                secretAccessKey: s3Secret,
-            },
-        },
+        config: sharedConfig,
     };
 
     const videosBucket: StorageBucket = {
         bucketName: videosBucketName,
-        config: {
-            endpoint: s3Endpoint,
-            credentials: {
-                accessKeyId: s3Key,
-                secretAccessKey: s3Secret,
-            },
-        },
+        config: sharedConfig,
     };
 
     return {
@@ -133,6 +137,7 @@ export class VideoStorage implements IVideoStorage {
                 Bucket: this.buckets.videosBucket.bucketName,
                 Key: file,
             })
+            .on("httpError", (e) => console.log(e))
             .promise();
 
         return {
@@ -146,6 +151,7 @@ export class VideoStorage implements IVideoStorage {
         file: string,
         range: string
     ): Promise<ArchiveStreamChunk> {
+        console.log("Getting video chunk!");
         const s3 = this.videos;
 
         const { meta } = await this.getVideoMetaData(file);
