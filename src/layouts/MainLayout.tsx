@@ -2,9 +2,11 @@ import React from "react";
 import Head from "next/head";
 import { Navbar } from "../components/Navbar";
 import { useQuery } from "react-query";
+import { useUserState } from "../context/UserContext";
 
 export const MainLayout: React.FC = ({ children }) => {
-    const { data, isLoading, error } = useQuery(["user-info"], async () => {
+    const userState = useUserState();
+    const { data, isLoading } = useQuery(["user-info"], async () => {
         const res = await fetch("/api/user/info", {
             method: "GET",
         });
@@ -14,7 +16,11 @@ export const MainLayout: React.FC = ({ children }) => {
         }
 
         const userData = await res.json();
-        console.log(userData);
+
+        if (!userData.user) {
+            userState.actions.setUser(userData);
+        }
+
         return userData;
     });
     return (

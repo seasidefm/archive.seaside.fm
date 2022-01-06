@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useUserState } from "../context/UserContext";
 
 const twitchRedirect = () => {
     const clientId = process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID,
@@ -9,6 +10,7 @@ const twitchRedirect = () => {
 };
 
 export const Navbar: React.FC = () => {
+    const { user } = useUserState();
     return (
         <nav className="navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
@@ -94,27 +96,43 @@ export const Navbar: React.FC = () => {
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <div className="buttons">
-                            <a
-                                href={twitchRedirect()}
-                                style={{
-                                    backgroundColor: "#6441a5",
-                                }}
-                                className="button is-dark"
-                            >
-                                <Image
-                                    alt={"Twitch"}
-                                    src={"/twitch.svg"}
-                                    width={15}
-                                    height={15}
-                                />
-                                <strong
-                                    style={{
-                                        marginLeft: "8px",
-                                    }}
+                            {user ? (
+                                <div
+                                    className={"is-flex is-align-items-center"}
                                 >
-                                    Log in with Twitch
-                                </strong>
-                            </a>
+                                    <p className={"mr-3"}>
+                                        <strong>{user.display_name}</strong>
+                                    </p>
+                                    <Image
+                                        src={user.profile_image_url}
+                                        alt={"Profile"}
+                                        width={50}
+                                        height={50}
+                                    />
+                                </div>
+                            ) : (
+                                <a
+                                    href={twitchRedirect()}
+                                    style={{
+                                        backgroundColor: "#6441a5",
+                                    }}
+                                    className="button is-dark"
+                                >
+                                    <Image
+                                        alt={"Twitch"}
+                                        src={"/twitch.svg"}
+                                        width={15}
+                                        height={15}
+                                    />
+                                    <strong
+                                        style={{
+                                            marginLeft: "8px",
+                                        }}
+                                    >
+                                        Log in with Twitch
+                                    </strong>
+                                </a>
+                            )}
                         </div>
                     </div>
                 </div>
