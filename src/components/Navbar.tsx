@@ -1,18 +1,27 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+
+const twitchRedirect = () => {
+    const clientId = process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID,
+        redirect = process.env.NEXT_PUBLIC_TWITCH_REDIRECT;
+    return `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirect}&response_type=code&scope=user:read:subscriptions`;
+};
 
 export const Navbar: React.FC = () => {
     return (
         <nav className="navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                <a className="navbar-item" href="https://bulma.io">
-                    <Image
-                        src="https://bulma.io/images/bulma-logo.png"
-                        alt={"Logo"}
-                        width="112"
-                        height="28"
-                    />
-                </a>
+                <Link href="/">
+                    <a className="navbar-item">
+                        <Image
+                            src="/logo.png"
+                            alt={"Logo"}
+                            width="200"
+                            height="200"
+                        />
+                    </a>
+                </Link>
 
                 <a
                     role="button"
@@ -31,36 +40,80 @@ export const Navbar: React.FC = () => {
                 <div className="navbar-start">
                     <a className="navbar-item">Home</a>
 
-                    <a className="navbar-item">Documentation</a>
+                    <Link href={"/privacy"}>
+                        <a className="navbar-item">Privacy</a>
+                    </Link>
+
+                    {/*<Link href={"/"}>*/}
+                    {/*    <a className="navbar-item">*/}
+                    {/*        Past Streams - COMING SOON!*/}
+                    {/*    </a>*/}
+                    {/*</Link>*/}
+                    {/*<Link href={"/"}>*/}
+                    {/*    <a className="navbar-item">New Mixes - COMING SOON!</a>*/}
+                    {/*</Link>*/}
 
                     <div className="navbar-item has-dropdown is-hoverable">
-                        <a className="navbar-link">More</a>
+                        <a className="navbar-link">Stream Links</a>
 
                         <div className="navbar-dropdown">
-                            <a className="navbar-item">About</a>
-                            <a className="navbar-item">Jobs</a>
-                            <a className="navbar-item">Contact</a>
+                            <Link href={"/favorites"}>
+                                <a className="navbar-item">My Saved Songs</a>
+                            </Link>
                             <hr className="navbar-divider" />
-                            <a className="navbar-item">Report an issue</a>
+                            <a
+                                className="navbar-item"
+                                href={"https://forms.gle/C1iLLzX9RtW5zXgf7"}
+                            >
+                                Report a bug
+                            </a>
                         </div>
                     </div>
+                    {/*<div className="navbar-item has-dropdown is-hoverable">*/}
+                    {/*    <a className="navbar-link">Dev Links</a>*/}
+
+                    {/*    <div className="navbar-dropdown">*/}
+                    {/*        <Link*/}
+                    {/*            href={*/}
+                    {/*                "https://github.com/seasidefm/archive.seaside.fm"*/}
+                    {/*            }*/}
+                    {/*        >*/}
+                    {/*            <a className="navbar-item">View Source Code</a>*/}
+                    {/*        </Link>*/}
+                    {/*        /!*<hr className="navbar-divider" />*!/*/}
+                    {/*        /!*<a*!/*/}
+                    {/*        /!*    className="navbar-item"*!/*/}
+                    {/*        /!*    href={"https://forms.gle/C1iLLzX9RtW5zXgf7"}*!/*/}
+                    {/*        /!*>*!/*/}
+                    {/*        /!*    Report an issue*!/*/}
+                    {/*        /!*</a>*!/*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
 
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <div className="buttons">
                             <a
-                                href={`https://id.twitch.tv/oauth2/authorize
-    ?client_id=<your client ID>
-    &redirect_uri=<your registered redirect URI>
-    &response_type=code
-    &scope=user:read:subscriptions%20user:read:email`}
+                                href={twitchRedirect()}
                                 style={{
                                     backgroundColor: "#6441a5",
                                 }}
                                 className="button is-dark"
                             >
-                                <strong>Log in with Twitch</strong>
+                                <Image
+                                    alt={"Twitch"}
+                                    src={"/twitch.svg"}
+                                    width={15}
+                                    height={15}
+                                />
+                                <strong
+                                    style={{
+                                        marginLeft: "8px",
+                                    }}
+                                >
+                                    Log in with Twitch
+                                </strong>
                             </a>
                         </div>
                     </div>
