@@ -1,0 +1,98 @@
+name: Publish
+
+on:
+  push:
+
+jobs:
+  check:
+    name: Check Code For Issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-
+
+      - name: Get pnpm binary
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.23.5
+          run_install: true
+
+      - name: Run linter
+        run: pnpm lint
+
+  publish:
+    name: Create Latest Images
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # In this step, this action saves a list of existing images,
+      # the cache is created without them in the post run.
+      # It also restores the cache if it exists.
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: registry.dougflynn.dev
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          config: .github/buildkitd.toml
+
+      - name: Create and Push Manifest(s)
+        run: make build-arm
+
+#  deploy:
+#    name: Restart Kubernetes Deployment
+#    needs: publish
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: Wait for Docker Manifests to Populate
+#        run: echo "Allowing time for manifests..." && sleep 30s
+#        shell: bash
+#
+#      - name: Deploy to Cluster
+#        uses: steebchen/kubectl@v2.0.0
+#        with:
+#          config: ${{ secrets.KUBE_CONFIG }}
+#          command: apply -f kube
+#
+#      - name: Deploy to Cluster
+#        uses: steebchen/kubectl@v2.0.0
+#        with:
+#          config: ${{ secrets.KUBE_CONFIG }}
+#          command: rollout restart deployment -n botsuro botsuro-ui-deployment
+#
+#      - name: Verify Deployment
+#        uses: steebchen/kubectl@v2.0.0
+#        with:
+#          config: ${{ secrets.KUBE_CONFIG }}
+#          command: rollout status -n botsuro deployment botsuro-ui-deployment
