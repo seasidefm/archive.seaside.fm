@@ -29,7 +29,7 @@ export default async function handler(
     res.writeHead(206, headers);
 
     stream.on("end", () => {
-        console.log("Served by Linode S3!");
+        console.log("Served my MinIO");
     });
     stream.pipe(res);
 }

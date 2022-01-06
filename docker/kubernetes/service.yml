@@ -1,0 +1,27 @@
+UPLOAD_BUCKET="archive-seasidefm-unprocessed"
+PROCESSED_BUCKET="archive-seasidefm-uploads"
+MINIO_KEY="seasidefm-nextjs-archive"
+MINIO_SECRET="83YCvJKi9DXK9EJ7ew77"
+MINIO_ENDPOINT="http://localhost:9000"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seaside-archives-deployment
+  labels:
+    app: seaside-archives
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: seaside-archives
+  template:
+    metadata:
+      labels:
+        app: seaside-archives
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.14.2
+          ports:
+            - containerPort: 80
