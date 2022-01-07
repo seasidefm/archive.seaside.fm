@@ -186,6 +186,12 @@ const FavoritesPage: NextPage = () => {
                                                 }
                                             >
                                                 <a
+                                                    onClick={async () => {
+                                                        console.log(
+                                                            "Deleting",
+                                                            entry
+                                                        );
+                                                    }}
                                                     type={"button"}
                                                     className={
                                                         "has-text-danger"

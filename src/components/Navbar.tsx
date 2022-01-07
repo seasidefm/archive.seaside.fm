@@ -13,24 +13,14 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
     return (
         <Fragment>
             {" "}
-            <div className="navbar-start">
+            <div className="navbar-end">
+                {" "}
                 <Link href={"/"}>
                     <a className="navbar-item">Home</a>
                 </Link>
-
                 <Link href={"/privacy"}>
                     <a className="navbar-item">Privacy</a>
                 </Link>
-
-                {/*<Link href={"/"}>*/}
-                {/*    <a className="navbar-item">*/}
-                {/*        Past Streams - COMING SOON!*/}
-                {/*    </a>*/}
-                {/*</Link>*/}
-                {/*<Link href={"/"}>*/}
-                {/*    <a className="navbar-item">New Mixes - COMING SOON!</a>*/}
-                {/*</Link>*/}
-
                 <div className="navbar-item has-dropdown is-hoverable">
                     <a className="navbar-link">Botsuro Links</a>
 
@@ -47,10 +37,13 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
                         </a>
                     </div>
                 </div>
-            </div>
-            <div className="navbar-end">
-                <div className="navbar-item">
-                    <div className="buttons">
+                <div className="navbar-item is-flex is-align-items-center is-justify-content-center">
+                    <div
+                        className="buttons"
+                        style={{
+                            marginBottom: "0 !important",
+                        }}
+                    >
                         {user ? (
                             <div className={"is-flex is-align-items-center"}>
                                 <p className={"mr-3"}>

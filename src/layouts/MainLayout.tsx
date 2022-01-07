@@ -4,6 +4,7 @@ import { Navbar } from "../components/Navbar";
 import { useQuery } from "react-query";
 import { useUserState } from "../context/UserContext";
 import { TwitchUser } from "../structures/twitch";
+import moment from "moment";
 
 export const MainLayout: React.FC = ({ children }) => {
     const userState = useUserState();
@@ -63,6 +64,9 @@ export const MainLayout: React.FC = ({ children }) => {
             </div>
             <footer className="footer mt-auto">
                 <div className="content has-text-centered">
+                    <p>
+                        <strong>Copyright SeasideFM {moment().year()}</strong>
+                    </p>
                     <p>
                         <strong>Video content</strong> created under Fair Use
                         conditions by{" "}
