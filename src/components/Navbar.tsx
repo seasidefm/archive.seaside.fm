@@ -109,6 +109,7 @@ export const Navbar: React.FC = () => {
                         />
                     </a>
                 </Link>
+                <h3 className={"title is-4 mt-3 mr-5"}>Seaside FM Archives</h3>
 
                 <a
                     onClick={() => setMobileNav(!mobileNavOpen)}
