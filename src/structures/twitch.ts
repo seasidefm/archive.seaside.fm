@@ -27,6 +27,14 @@ export interface TwitchRefreshResponse {
     error?: string;
 }
 
+export interface TwitchValidationResponse {
+    client_id: "wbmytr93xzw8zbg0p1izqyzzc5mbiz";
+    login: "twitchdev";
+    scopes: ["channel:read:subscriptions"];
+    user_id: "141981764";
+    expires_in: 5520838;
+}
+
 export interface TwitchUserInfoResponse {
     aud: string;
     exp: number;
@@ -36,3 +44,9 @@ export interface TwitchUserInfoResponse {
     azp: string;
     preferred_username: string;
 }
+
+export type DataOrError<T> = {
+    data?: T;
+    error?: string;
+    status: number;
+};

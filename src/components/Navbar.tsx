@@ -32,7 +32,7 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
                 {/*</Link>*/}
 
                 <div className="navbar-item has-dropdown is-hoverable">
-                    <a className="navbar-link">Stream Links</a>
+                    <a className="navbar-link">Botsuro Links</a>
 
                     <div className="navbar-dropdown">
                         <Link href={"/favorites"}>

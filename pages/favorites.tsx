@@ -2,6 +2,9 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { MainLayout } from "../src/layouts/MainLayout";
 import { useUserState } from "../src/context/UserContext";
+import { useQuery } from "react-query";
+import { IFavorite } from "../src/services/backend/database/Favorite.model";
+import moment from "moment";
 
 interface FavoriteSong {
     favoriteDate: number;
@@ -36,6 +39,16 @@ const testSongs: Array<FavoriteSong> = [
 
 const FavoritesPage: NextPage = () => {
     const { user } = useUserState();
+    const { data, isLoading } = useQuery<IFavorite["songs"]>(
+        ["favorites"],
+        async () => {
+            const res = await fetch("/api/user/favorites", {
+                method: "GET",
+            }).then((r) => r.json());
+
+            return res.data;
+        }
+    );
     return (
         <MainLayout>
             <div className="container p-5">
@@ -61,14 +74,31 @@ const FavoritesPage: NextPage = () => {
                     >
                         <thead>
                             <tr>
-                                <td>Date Saved</td>
-                                <td>Artist</td>
-                                <td>Song Title</td>
-                                <td>Search Links</td>
-                                <td>Actions</td>
+                                <td>
+                                    <strong>Artist</strong>
+                                </td>
+                                <td>
+                                    <strong>Song Title</strong>
+                                </td>
+                                <td>
+                                    <strong>Date Saved (Eastern)</strong>
+                                </td>
+                                <td>
+                                    <strong>Search Links</strong>
+                                </td>
+                                <td>
+                                    <strong>Actions</strong>
+                                </td>
                             </tr>
                         </thead>
                         <tbody>
+                            {user && isLoading && (
+                                <tr>
+                                    <td colSpan={4}>
+                                        <div>Loading saved songs...</div>
+                                    </td>
+                                </tr>
+                            )}
                             {!user && (
                                 <tr>
                                     <td colSpan={4}>
@@ -79,9 +109,10 @@ const FavoritesPage: NextPage = () => {
                                     </td>
                                 </tr>
                             )}
-                            {testSongs.map((song) => {
+                            {data?.map((entry) => {
+                                const [artist, song] = entry.song.split(" - ");
                                 return (
-                                    <tr key={`${song.artist}-${song.song}`}>
+                                    <tr key={`${artist}-${song}`}>
                                         <td>
                                             <div
                                                 style={{
@@ -91,9 +122,7 @@ const FavoritesPage: NextPage = () => {
                                                     "is-flex is-align-items-center"
                                                 }
                                             >
-                                                {new Date(
-                                                    song.favoriteDate
-                                                ).toDateString()}
+                                                {artist}
                                             </div>
                                         </td>
                                         <td>
@@ -105,7 +134,7 @@ const FavoritesPage: NextPage = () => {
                                                     "is-flex is-align-items-center"
                                                 }
                                             >
-                                                {song.artist}
+                                                {song}
                                             </div>
                                         </td>
                                         <td>
@@ -117,7 +146,9 @@ const FavoritesPage: NextPage = () => {
                                                     "is-flex is-align-items-center"
                                                 }
                                             >
-                                                {song.song}
+                                                {moment(
+                                                    entry.date * 1000
+                                                ).format("HH:mm DD MMMM, YYYY")}
                                             </div>
                                         </td>
                                         <td>
@@ -131,8 +162,8 @@ const FavoritesPage: NextPage = () => {
                                             >
                                                 <Link
                                                     href={formatYoutubeLink(
-                                                        song.artist,
-                                                        song.song
+                                                        artist,
+                                                        song
                                                     )}
                                                 >
                                                     <a
@@ -160,7 +191,7 @@ const FavoritesPage: NextPage = () => {
                                                         "has-text-danger"
                                                     }
                                                 >
-                                                    Un-Favorite
+                                                    Delete
                                                 </a>
                                             </div>
                                         </td>

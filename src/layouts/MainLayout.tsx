@@ -46,7 +46,7 @@ export const MainLayout: React.FC = ({ children }) => {
                 }}
             >
                 <Navbar />
-                {isLoading && (
+                {isLoading && !userState.user ? (
                     <div
                         style={{
                             height: "100%",
@@ -57,8 +57,9 @@ export const MainLayout: React.FC = ({ children }) => {
                     >
                         Loading page info...
                     </div>
+                ) : (
+                    children
                 )}
-                {!isLoading && children}
             </div>
             <footer className="footer mt-auto">
                 <div className="content has-text-centered">
