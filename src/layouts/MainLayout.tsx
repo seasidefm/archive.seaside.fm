@@ -6,7 +6,7 @@ import { useUserState } from "../context/UserContext";
 
 export const MainLayout: React.FC = ({ children }) => {
     const userState = useUserState();
-    const { data, isLoading } = useQuery(["user-info"], async () => {
+    const { isLoading } = useQuery(["user-info"], async () => {
         const res = await fetch("/api/user/info", {
             method: "GET",
         });
@@ -17,7 +17,7 @@ export const MainLayout: React.FC = ({ children }) => {
 
         const userData = await res.json();
 
-        if (!userData.user) {
+        if (!userState.user && !userData.error) {
             userState.actions.setUser(userData);
         }
 
@@ -41,9 +41,19 @@ export const MainLayout: React.FC = ({ children }) => {
                 }}
             >
                 <Navbar />
-                {isLoading && "loading..."}
-                {data && <pre>{JSON.stringify(data)}</pre>}
-                {children}
+                {isLoading && (
+                    <div
+                        style={{
+                            height: "100%",
+                        }}
+                        className={
+                            "is-flex is-align-items-center is-justify-content-center"
+                        }
+                    >
+                        Loading page info...
+                    </div>
+                )}
+                {!isLoading && children}
             </div>
             <footer className="footer mt-auto">
                 <div className="content has-text-centered">
@@ -56,7 +66,7 @@ export const MainLayout: React.FC = ({ children }) => {
                         <br />
                         <strong>Website</strong> programmed by{" "}
                         <a href="https://github.com/DukeFerdinand">
-                            Doug Flynn
+                            Duke_Ferdinand
                         </a>
                         . The source code is licensed{" "}
                         <strong>

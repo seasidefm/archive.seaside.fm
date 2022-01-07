@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useUserState } from "../context/UserContext";
@@ -11,6 +11,7 @@ const twitchRedirect = () => {
 
 export const Navbar: React.FC = () => {
     const { user } = useUserState();
+    const [mobileNavOpen, setMobileNav] = useState(false);
     return (
         <nav className="navbar" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
@@ -26,6 +27,7 @@ export const Navbar: React.FC = () => {
                 </Link>
 
                 <a
+                    onClick={() => setMobileNav(!mobileNavOpen)}
                     role="button"
                     className="navbar-burger"
                     aria-label="menu"
@@ -38,9 +40,18 @@ export const Navbar: React.FC = () => {
                 </a>
             </div>
 
-            <div id="navbarBasicExample" className="navbar-menu">
+            <div
+                id="navbarBasicExample"
+                style={{
+                    display: mobileNavOpen ? "initial" : "none",
+                }}
+                className="navbar-menu is-mobile"
+                onClick={() => setMobileNav(false)}
+            >
                 <div className="navbar-start">
-                    <a className="navbar-item">Home</a>
+                    <Link href={"/"}>
+                        <a className="navbar-item">Home</a>
+                    </Link>
 
                     <Link href={"/privacy"}>
                         <a className="navbar-item">Privacy</a>
@@ -101,10 +112,10 @@ export const Navbar: React.FC = () => {
                                     className={"is-flex is-align-items-center"}
                                 >
                                     <p className={"mr-3"}>
-                                        <strong>{user.display_name}</strong>
+                                        <strong>{user?.display_name}</strong>
                                     </p>
                                     <Image
-                                        src={user.profile_image_url}
+                                        src={user?.profile_image_url}
                                         alt={"Profile"}
                                         width={50}
                                         height={50}
