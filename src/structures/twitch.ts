@@ -19,6 +19,14 @@ export interface TwitchTokenData {
     token_type: "bearer";
 }
 
+export interface TwitchRefreshResponse {
+    access_token: string;
+    refresh_token: string;
+    scope: string[];
+    token_type: "bearer";
+    error?: string;
+}
+
 export interface TwitchUserInfoResponse {
     aud: string;
     exp: number;

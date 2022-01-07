@@ -50,7 +50,7 @@ const FavoritesPage: NextPage = () => {
                 <div
                     style={{
                         width: "100%",
-                        overflow: "scroll",
+                        overflow: "auto",
                     }}
                 >
                     <table

@@ -1,12 +1,96 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useUserState } from "../context/UserContext";
+import { UserState, useUserState } from "../context/UserContext";
 
 const twitchRedirect = () => {
     const clientId = process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID,
         redirect = process.env.NEXT_PUBLIC_TWITCH_REDIRECT;
     return `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirect}&response_type=code&scope=user:read:subscriptions`;
+};
+
+const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
+    return (
+        <Fragment>
+            {" "}
+            <div className="navbar-start">
+                <Link href={"/"}>
+                    <a className="navbar-item">Home</a>
+                </Link>
+
+                <Link href={"/privacy"}>
+                    <a className="navbar-item">Privacy</a>
+                </Link>
+
+                {/*<Link href={"/"}>*/}
+                {/*    <a className="navbar-item">*/}
+                {/*        Past Streams - COMING SOON!*/}
+                {/*    </a>*/}
+                {/*</Link>*/}
+                {/*<Link href={"/"}>*/}
+                {/*    <a className="navbar-item">New Mixes - COMING SOON!</a>*/}
+                {/*</Link>*/}
+
+                <div className="navbar-item has-dropdown is-hoverable">
+                    <a className="navbar-link">Stream Links</a>
+
+                    <div className="navbar-dropdown">
+                        <Link href={"/favorites"}>
+                            <a className="navbar-item">My Saved Songs</a>
+                        </Link>
+                        <hr className="navbar-divider" />
+                        <a
+                            className="navbar-item"
+                            href={"https://forms.gle/C1iLLzX9RtW5zXgf7"}
+                        >
+                            Report a bug
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div className="navbar-end">
+                <div className="navbar-item">
+                    <div className="buttons">
+                        {user ? (
+                            <div className={"is-flex is-align-items-center"}>
+                                <p className={"mr-3"}>
+                                    <strong>{user?.display_name}</strong>
+                                </p>
+                                <Image
+                                    src={user?.profile_image_url}
+                                    alt={"Profile"}
+                                    width={50}
+                                    height={50}
+                                />
+                            </div>
+                        ) : (
+                            <a
+                                href={twitchRedirect()}
+                                style={{
+                                    backgroundColor: "#6441a5",
+                                }}
+                                className="button is-dark"
+                            >
+                                <Image
+                                    alt={"Twitch"}
+                                    src={"/twitch.svg"}
+                                    width={15}
+                                    height={15}
+                                />
+                                <strong
+                                    style={{
+                                        marginLeft: "8px",
+                                    }}
+                                >
+                                    Log in with Twitch
+                                </strong>
+                            </a>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </Fragment>
+    );
 };
 
 export const Navbar: React.FC = () => {
@@ -40,6 +124,10 @@ export const Navbar: React.FC = () => {
                 </a>
             </div>
 
+            <div className="navbar-menu is-desktop">
+                <NavLinks {...{ user }} />
+            </div>
+
             <div
                 id="navbarBasicExample"
                 style={{
@@ -48,105 +136,7 @@ export const Navbar: React.FC = () => {
                 className="navbar-menu is-mobile"
                 onClick={() => setMobileNav(false)}
             >
-                <div className="navbar-start">
-                    <Link href={"/"}>
-                        <a className="navbar-item">Home</a>
-                    </Link>
-
-                    <Link href={"/privacy"}>
-                        <a className="navbar-item">Privacy</a>
-                    </Link>
-
-                    {/*<Link href={"/"}>*/}
-                    {/*    <a className="navbar-item">*/}
-                    {/*        Past Streams - COMING SOON!*/}
-                    {/*    </a>*/}
-                    {/*</Link>*/}
-                    {/*<Link href={"/"}>*/}
-                    {/*    <a className="navbar-item">New Mixes - COMING SOON!</a>*/}
-                    {/*</Link>*/}
-
-                    <div className="navbar-item has-dropdown is-hoverable">
-                        <a className="navbar-link">Stream Links</a>
-
-                        <div className="navbar-dropdown">
-                            <Link href={"/favorites"}>
-                                <a className="navbar-item">My Saved Songs</a>
-                            </Link>
-                            <hr className="navbar-divider" />
-                            <a
-                                className="navbar-item"
-                                href={"https://forms.gle/C1iLLzX9RtW5zXgf7"}
-                            >
-                                Report a bug
-                            </a>
-                        </div>
-                    </div>
-                    {/*<div className="navbar-item has-dropdown is-hoverable">*/}
-                    {/*    <a className="navbar-link">Dev Links</a>*/}
-
-                    {/*    <div className="navbar-dropdown">*/}
-                    {/*        <Link*/}
-                    {/*            href={*/}
-                    {/*                "https://github.com/seasidefm/archive.seaside.fm"*/}
-                    {/*            }*/}
-                    {/*        >*/}
-                    {/*            <a className="navbar-item">View Source Code</a>*/}
-                    {/*        </Link>*/}
-                    {/*        /!*<hr className="navbar-divider" />*!/*/}
-                    {/*        /!*<a*!/*/}
-                    {/*        /!*    className="navbar-item"*!/*/}
-                    {/*        /!*    href={"https://forms.gle/C1iLLzX9RtW5zXgf7"}*!/*/}
-                    {/*        /!*>*!/*/}
-                    {/*        /!*    Report an issue*!/*/}
-                    {/*        /!*</a>*!/*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-                </div>
-
-                <div className="navbar-end">
-                    <div className="navbar-item">
-                        <div className="buttons">
-                            {user ? (
-                                <div
-                                    className={"is-flex is-align-items-center"}
-                                >
-                                    <p className={"mr-3"}>
-                                        <strong>{user?.display_name}</strong>
-                                    </p>
-                                    <Image
-                                        src={user?.profile_image_url}
-                                        alt={"Profile"}
-                                        width={50}
-                                        height={50}
-                                    />
-                                </div>
-                            ) : (
-                                <a
-                                    href={twitchRedirect()}
-                                    style={{
-                                        backgroundColor: "#6441a5",
-                                    }}
-                                    className="button is-dark"
-                                >
-                                    <Image
-                                        alt={"Twitch"}
-                                        src={"/twitch.svg"}
-                                        width={15}
-                                        height={15}
-                                    />
-                                    <strong
-                                        style={{
-                                            marginLeft: "8px",
-                                        }}
-                                    >
-                                        Log in with Twitch
-                                    </strong>
-                                </a>
-                            )}
-                        </div>
-                    </div>
-                </div>
+                <NavLinks {...{ user }} />
             </div>
         </nav>
     );

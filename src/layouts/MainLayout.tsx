@@ -3,6 +3,7 @@ import Head from "next/head";
 import { Navbar } from "../components/Navbar";
 import { useQuery } from "react-query";
 import { useUserState } from "../context/UserContext";
+import { TwitchUser } from "../structures/twitch";
 
 export const MainLayout: React.FC = ({ children }) => {
     const userState = useUserState();
@@ -15,10 +16,14 @@ export const MainLayout: React.FC = ({ children }) => {
             console.log("No token available");
         }
 
-        const userData = await res.json();
+        const userData: { data: TwitchUser; error: string } = await res.json();
 
         if (!userState.user && !userData.error) {
-            userState.actions.setUser(userData);
+            userState.actions.setUser(userData.data);
+        }
+
+        if (userData.error) {
+            throw new Error(userData.error);
         }
 
         return userData;
