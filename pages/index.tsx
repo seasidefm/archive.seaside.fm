@@ -5,11 +5,17 @@ import { MainLayout } from "../src/layouts/MainLayout";
 const Home: NextPage = () => {
     return (
         <MainLayout>
-            <div className="columns mt-2">
+            <div
+                style={{
+                    height: "100%",
+                    width: "100%",
+                }}
+            >
                 <Image
                     src={"/background.png"}
-                    objectFit={"contain"}
-                    layout={"fill"}
+                    width={1920}
+                    height={1080}
+                    layout={"responsive"}
                 />
 
                 {/*<div className="column is-flex is-flex-direction-column">*/}

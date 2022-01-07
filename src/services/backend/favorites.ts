@@ -9,4 +9,15 @@ export class Favorites {
 
         return favoritesObject.toJSON().songs;
     }
+    async deleteFavorite(user: string, faveId: string) {
+        const favorites = await getFavoritesModel();
+        const results = await favorites.updateOne(
+            { user: { $eq: user } },
+            { $pull: { songs: { _id: faveId } } }
+        );
+
+        console.log(results);
+
+        return true;
+    }
 }

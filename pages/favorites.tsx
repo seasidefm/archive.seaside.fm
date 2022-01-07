@@ -187,9 +187,18 @@ const FavoritesPage: NextPage = () => {
                                             >
                                                 <a
                                                     onClick={async () => {
-                                                        console.log(
-                                                            "Deleting",
-                                                            entry
+                                                        await fetch(
+                                                            "/api/user/remove-favorite",
+                                                            {
+                                                                method: "POST",
+                                                                body: JSON.stringify(
+                                                                    entry
+                                                                ),
+                                                                headers: {
+                                                                    "Content-Type":
+                                                                        "application/json",
+                                                                },
+                                                            }
                                                         );
                                                     }}
                                                     type={"button"}
