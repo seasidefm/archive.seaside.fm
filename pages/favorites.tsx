@@ -39,16 +39,17 @@ const testSongs: Array<FavoriteSong> = [
 
 const FavoritesPage: NextPage = () => {
     const { user } = useUserState();
-    const { data, isLoading } = useQuery<IFavorite["songs"]>(
-        ["favorites"],
-        async () => {
-            const res = await fetch("/api/user/favorites", {
-                method: "GET",
-            }).then((r) => r.json());
+    const {
+        data,
+        isLoading,
+        refetch: refetchSongs,
+    } = useQuery<IFavorite["songs"]>(["favorites"], async () => {
+        const res = await fetch("/api/user/favorites", {
+            method: "GET",
+        }).then((r) => r.json());
 
-            return res.data;
-        }
-    );
+        return res.data;
+    });
     return (
         <MainLayout>
             <div className="container p-5">
@@ -81,7 +82,7 @@ const FavoritesPage: NextPage = () => {
                                     <strong>Song Title</strong>
                                 </td>
                                 <td>
-                                    <strong>Date Saved (Eastern)</strong>
+                                    <strong>Date Saved</strong>
                                 </td>
                                 <td>
                                     <strong>Search Links</strong>
@@ -200,6 +201,7 @@ const FavoritesPage: NextPage = () => {
                                                                 },
                                                             }
                                                         );
+                                                        await refetchSongs();
                                                     }}
                                                     type={"button"}
                                                     className={

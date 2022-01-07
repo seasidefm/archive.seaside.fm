@@ -15,7 +15,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ): Promise<void> {
-    const { _id: faveId } = req.body;
+    const { song } = req.body;
     const token = getTwitchToken(req, res);
 
     // No token, not authorized
@@ -41,7 +41,7 @@ export default async function handler(
         return res.status(400).json({ error: "Unable to get username" });
     }
     const favorites = new Favorites();
-    const faveList = await favorites.deleteFavorite(username, faveId);
+    const faveList = await favorites.deleteFavorite(username, song);
 
     res.json({ data: faveList });
 }

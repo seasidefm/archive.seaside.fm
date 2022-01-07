@@ -9,14 +9,12 @@ export class Favorites {
 
         return favoritesObject.toJSON().songs;
     }
-    async deleteFavorite(user: string, faveId: string) {
+    async deleteFavorite(user: string, song: string) {
         const favorites = await getFavoritesModel();
         const results = await favorites.updateOne(
             { user: { $eq: user } },
-            { $pull: { songs: { _id: faveId } } }
+            { $pull: { songs: { song } } }
         );
-
-        console.log(results);
 
         return true;
     }
