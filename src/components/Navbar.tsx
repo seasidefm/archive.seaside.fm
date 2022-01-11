@@ -21,6 +21,9 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
                 {/*<Link href={"/privacy"}>*/}
                 {/*    <a className="navbar-item">Privacy</a>*/}
                 {/*</Link>*/}
+                <Link href={"/leaderboards"}>
+                    <a className="navbar-item">Leaderboards</a>
+                </Link>
                 <div className="navbar-item has-dropdown is-hoverable">
                     <a className="navbar-link">Botsuro Links</a>
 
