@@ -17,7 +17,7 @@ const LeaderboardsPage: NextPage = () => {
     return (
         <MainLayout>
             <div className="container p-5">
-                <h1 className={"title mt-5"}>Favorite Song Leaderboard</h1>
+                <h1 className={"title mt-5"}>Song Collector Leaderboard</h1>
                 <p>
                     To add more favorites, use <code>?fave</code> during the
                     stream!

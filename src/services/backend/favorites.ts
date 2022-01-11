@@ -8,8 +8,10 @@ export class Favorites {
                 {
                     $match: {
                         user: {
-                            // Remove myself from the running!
-                            $ne: "duke_ferdinand",
+                            // Remove myself and seasidefm from the running!
+                            $not: {
+                                $in: ["duke_ferdinand", "seasidefm"],
+                            },
                         },
                     },
                 },
