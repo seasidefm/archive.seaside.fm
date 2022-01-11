@@ -55,7 +55,7 @@ const LeaderboardsPage: NextPage = () => {
                             {user && isLoading && (
                                 <tr>
                                     <td colSpan={4}>
-                                        <div>Loading saved songs...</div>
+                                        <div>Loading leaderboard...</div>
                                     </td>
                                 </tr>
                             )}
