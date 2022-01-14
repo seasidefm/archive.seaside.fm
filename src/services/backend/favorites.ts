@@ -1,6 +1,73 @@
 import { getFavoritesModel } from "./database/db";
 
 export class Favorites {
+    async getMostFaved() {
+        const favorites = await getFavoritesModel();
+        //https://stackoverflow.com/questions/34089056/count-array-occurrences-across-all-documents-with-mongoa
+        const leaderboard = await favorites
+            .aggregate([
+                {
+                    $match: {
+                        user: {
+                            $not: {
+                                $in: ["duke_ferdinand", "seasidefm"],
+                            },
+                        },
+                    },
+                },
+                {
+                    $group: {
+                        _id: "songs",
+                        songList: {
+                            $push: "$songs.song",
+                        },
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$songList",
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$songList",
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            song: "$_id",
+                            songName: "$songList",
+                        },
+                        songCount: {
+                            $sum: 1,
+                        },
+                    },
+                },
+                {
+                    $sort: {
+                        songCount: -1,
+                        "_id.songName": 1,
+                    },
+                },
+                {
+                    $group: {
+                        _id: "$_id.song",
+                        songs: {
+                            $push: {
+                                name: "$_id.songName",
+                                faveCount: "$songCount",
+                            },
+                        },
+                    },
+                },
+            ])
+            .exec();
+
+        console.log(leaderboard);
+
+        return leaderboard;
+    }
     async getFavoritesLeaderboard() {
         const favorites = await getFavoritesModel();
         const leaderboard = await favorites

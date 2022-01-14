@@ -25,9 +25,12 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
                     <a className="navbar-item">Leaderboards</a>
                 </Link>
                 <div className="navbar-item has-dropdown is-hoverable">
-                    <a className="navbar-link">Botsuro Links</a>
+                    <a className="navbar-link">My SeasideFM</a>
 
                     <div className="navbar-dropdown">
+                        <Link href={"/requests"}>
+                            <a className="navbar-item">My Requests</a>
+                        </Link>
                         <Link href={"/favorites"}>
                             <a className="navbar-item">My Saved Songs</a>
                         </Link>

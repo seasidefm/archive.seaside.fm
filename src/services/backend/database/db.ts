@@ -1,6 +1,7 @@
 import { Connection } from "mongoose";
 import mongoose from "mongoose";
 import { FavoriteModel } from "./Favorite.model";
+import { RequestModel } from "./Request.model";
 
 let connection: Connection | undefined;
 export async function withDBConnection() {
@@ -18,4 +19,9 @@ export async function withDBConnection() {
 export const getFavoritesModel = async () => {
     await withDBConnection();
     return FavoriteModel;
+};
+
+export const getRequestsModel = async () => {
+    await withDBConnection();
+    return RequestModel;
 };
