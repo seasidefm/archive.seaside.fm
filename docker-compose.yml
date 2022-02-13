@@ -1,0 +1,22 @@
+version: '3'
+services:
+  archive-ui:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ./:/app
+      # This is just to ignore local dev machine node_modules
+      - archive-node-modules:/app/node_modules
+    env_file:
+      - .env.local
+    ports:
+      - '3000:3000'
+    external_links:
+      - video-processing_object-storage_1:minio
+volumes:
+  archive-node-modules:
+
+networks:
+  seasidefm:
+    external: true

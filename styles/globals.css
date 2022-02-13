@@ -14,3 +14,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+@media screen and (max-width: 805px) {
+  table td {
+    min-width: 175px;
+  }
+
+}
+

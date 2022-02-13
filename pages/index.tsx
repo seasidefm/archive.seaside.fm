@@ -1,58 +1,37 @@
 import type { NextPage } from "next";
-import { Navbar } from "../src/components/Navbar";
-import Head from "next/head";
+import Image from "next/image";
+import { MainLayout } from "../src/layouts/MainLayout";
 
 const Home: NextPage = () => {
     return (
-        <div
-            className={"is-flex is-flex-direction-column"}
-            style={{
-                height: "100vh",
-                width: "100vw",
-            }}
-        >
-            <Head>
-                <title>Home - SeasideFM Archive</title>
-            </Head>
-            <div className="container">
-                <Navbar />
-                <div className="columns mt-2">
-                    <div className="column">
-                        <video
-                            preload={"auto"}
-                            playsInline
-                            controls
-                            width={"100%"}
-                        >
-                            <source src={"/api/stream"} type={"video/mp4"} />
-                        </video>
-                    </div>
-                </div>
+        <MainLayout>
+            <div
+                style={{
+                    height: "100%",
+                    width: "100%",
+                }}
+            >
+                <Image
+                    src={"/background.png"}
+                    width={1920}
+                    height={1080}
+                    layout={"responsive"}
+                />
+
+                {/*<div className="column is-flex is-flex-direction-column">*/}
+                {/*    <h1 className="title">The Seaside FM Archives</h1>*/}
+                {/*    <p>Welcome!</p>*/}
+                {/*    /!*<video preload={"auto"} playsInline controls>*!/*/}
+                {/*    /!*    <source*!/*/}
+                {/*    /!*        src={*!/*/}
+                {/*    /!*            "/api/stream?v=adb9e62c-fe05-47eb-8d48-dbbfc5a4140f"*!/*/}
+                {/*    /!*        }*!/*/}
+                {/*    /!*        type={"video/mp4"}*!/*/}
+                {/*    /!*    />*!/*/}
+                {/*    /!*</video>*!/*/}
+                {/*</div>*/}
             </div>
-            <footer className="footer mt-auto">
-                <div className="content has-text-centered">
-                    <p>
-                        <strong>Video content</strong> created under Fair Use
-                        conditions by{" "}
-                        <a href="https://twitch.tv/seasidefm">SeasideFM</a>.
-                        Content is licensed under Creative Commons except where
-                        not applicable by law.
-                        <br />
-                        <strong>Website</strong> programmed by{" "}
-                        <a href="https://github.com/DukeFerdinand">
-                            Doug Flynn
-                        </a>
-                        . The source code is licensed{" "}
-                        <strong>
-                            <a href="http://opensource.org/licenses/mit-license.php">
-                                MIT
-                            </a>
-                        </strong>
-                        .
-                    </p>
-                </div>
-            </footer>
-        </div>
+        </MainLayout>
     );
 };
 

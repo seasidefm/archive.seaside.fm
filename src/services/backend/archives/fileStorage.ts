@@ -8,10 +8,12 @@ export interface IVideoStorage {
 
 interface StorageBucket {
     bucketName: string;
-    config: {
-        endpoint: string;
-        credentials: CredentialsOptions;
-    };
+    config: CredentialsOptions &
+        AWS.S3.ClientConfiguration & {
+            endpoint: AWS.Endpoint | string;
+            s3ForcePathStyle?: boolean;
+            signatureVersion?: string;
+        };
 }
 
 export interface ArchiveStreamChunk<
@@ -25,35 +27,61 @@ export interface ArchiveStreamChunk<
 }
 
 const getStorageConfig = () => {
-    const uploadBucket = process.env.LINODE_S3_UPLOAD_BUCKET,
-        uploadKey = process.env.LINODE_S3_UPLOAD_KEY,
-        uploadSecret = process.env.LINODE_S3_UPLOAD_SECRET,
-        uploadEndpoint = process.env.LINODE_S3_UPLOAD_ENDPOINT;
+    const uploadBucketName = process.env.UPLOAD_BUCKET,
+        videosBucketName = process.env.PROCESSED_BUCKET,
+        minioKey = process.env.MINIO_KEY,
+        minioSecret = process.env.MINIO_SECRET,
+        minioEndpoint = process.env.MINIO_ENDPOINT;
+    // UPLOAD_BUCKET = "archive-seasidefm-unprocessed";
+    // PROCESSED_BUCKET = "archive-seasidefm-uploads";
+    // MINIO_KEY = "seasidefm-nextjs-archive";
+    // MINIO_SECRET = "83YCvJKi9DXK9EJ7ew77";
+    // MINIO_ENDPOINT = "http://192.168.64.3:9000";
 
-    if (!uploadBucket || !uploadKey || !uploadSecret || !uploadEndpoint) {
-        throw new Error("Cannot find all expected LINODE_S3_* env vars!");
+    if (
+        !uploadBucketName ||
+        !videosBucketName ||
+        !minioKey ||
+        !minioSecret ||
+        !minioEndpoint
+    ) {
+        throw new Error("Cannot find all expected MINIO env vars!");
     }
 
+    const sharedConfig = {
+        s3ForcePathStyle: true, // needed with minio?
+        signatureVersion: "v4",
+        region: "us-east-1",
+        endpoint: new AWS.Endpoint(minioEndpoint),
+        accessKeyId: minioKey,
+        secretAccessKey: minioSecret,
+    };
+
     const unprocessedUploadsBucket: StorageBucket = {
-        bucketName: uploadBucket,
-        config: {
-            endpoint: uploadEndpoint,
-            credentials: {
-                accessKeyId: uploadKey,
-                secretAccessKey: uploadSecret,
-            },
-        },
+        bucketName: uploadBucketName,
+        config: sharedConfig,
+    };
+
+    const videosBucket: StorageBucket = {
+        bucketName: videosBucketName,
+        config: sharedConfig,
     };
 
     return {
         unprocessedUploadsBucket,
+        videosBucket,
     };
 };
 
 export class VideoStorage implements IVideoStorage {
     private storage: Storage;
     private readonly path: string;
-    private readonly buckets: Record<"unprocessedUploadsBucket", StorageBucket>;
+    private readonly buckets: Record<
+        "unprocessedUploadsBucket" | "videosBucket",
+        StorageBucket
+    >;
+    private readonly unprocessed: AWS.S3;
+    private readonly videos: AWS.S3;
 
     constructor(path: string) {
         this.path = path;
@@ -63,6 +91,14 @@ export class VideoStorage implements IVideoStorage {
         });
 
         this.buckets = getStorageConfig();
+
+        this.unprocessed = new AWS.S3({
+            ...this.buckets.unprocessedUploadsBucket.config,
+        });
+
+        this.videos = new AWS.S3({
+            ...this.buckets.videosBucket.config,
+        });
     }
 
     public async getUnprocessedUploads() {
@@ -93,29 +129,54 @@ export class VideoStorage implements IVideoStorage {
         return "url";
     }
 
-    public async getMetaData(file: string) {
-        const f = this.storage.bucket("").file(file);
+    public async getVideoMetaData(file: string) {
+        const s3 = this.videos;
 
-        return { meta: (await f.getMetadata())[0], file: f };
+        const meta = await s3
+            .headObject({
+                Bucket: this.buckets.videosBucket.bucketName,
+                Key: file,
+            })
+            .on("httpError", (e) => console.log(e))
+            .promise();
+
+        return {
+            meta: {
+                size: meta.ContentLength,
+            },
+        };
     }
 
     public async getStreamChunk(
         file: string,
         range: string
     ): Promise<ArchiveStreamChunk> {
-        const { meta, file: fileData } = await this.getMetaData(file);
+        console.log("Getting video chunk!");
+        const s3 = this.videos;
 
-        const CHUNK_SIZE = 10 ** 6;
+        const { meta } = await this.getVideoMetaData(file);
+
+        if (!meta.size || meta.size == 0) {
+            throw new Error(`Cannot read an empty file! '${file}'`);
+        }
+
+        // Roughly 2MiB
+        const CHUNK_SIZE = 3_000_000;
         const start = Number(range.replace(/\D/g, ""));
         const end = Math.min(start + CHUNK_SIZE, meta.size - 1);
 
         const chunkLength = end - start + 1;
 
+        console.log(`Serving bytes: ${start}-${end}/${meta.size}`);
+
+        const fileChunk = await s3.getObject({
+            Bucket: this.buckets.videosBucket.bucketName,
+            Key: file,
+            Range: `bytes=${start}-${end}`,
+        });
+
         return {
-            stream: fileData.createReadStream({
-                start,
-                end,
-            }),
+            stream: fileChunk.createReadStream(),
             chunkLength,
             start,
             end,
