@@ -1,0 +1,86 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: seasidefm
+  name: archives
+  labels:
+    app: archives
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: archives
+  template:
+    metadata:
+      labels:
+        app: archives
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: archives
+          image: registry.dougflynn.dev/seaside-archives
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+          env:
+            - name: MONGO_CONNECTION
+              valueFrom:
+                secretKeyRef:
+                  name: archive-secret
+                  key: MONGO_CONNECTION
+            - name: NEXT_PUBLIC_TWITCH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: archive-secret
+                  key: NEXT_PUBLIC_TWITCH_CLIENT_ID
+            - name: TWITCH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: archive-secret
+                  key: TWITCH_CLIENT_SECRET
+            - name: NEXT_PUBLIC_TWITCH_REDIRECT
+              valueFrom:
+                secretKeyRef:
+                  name: archive-secret
+                  key: NEXT_PUBLIC_TWITCH_REDIRECT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: seasidefm
+  name: archives
+spec:
+  selector:
+    app: archives
+  ports:
+    - name: web-port
+      port: 80
+      targetPort: 3000
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: seasidefm
+  name: archive-entrypoint
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+spec:
+  rules:
+    - host: archive.seaside.fm
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: archives
+                port:
+                  number: 80
+  tls:
+    - secretName: archive-tls
+      hosts:
+        - archive.seaside.fm

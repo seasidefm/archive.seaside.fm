@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: seasidefm
+  name: archive-ddns
+spec:
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: namecheap-ddns
+              image: dougflynndev/namecheap-ddns
+              imagePullPolicy: Always
+              env:
+                - name: PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: archive-host
+                      key: PASSWORD
+                - name: DOMAIN
+                  valueFrom:
+                    secretKeyRef:
+                      name: archive-host
+                      key: DOMAIN
+                - name: SUB_DOMAINS
+                  valueFrom:
+                    secretKeyRef:
+                      name: archive-host
+                      key: SUB_DOMAINS
+          restartPolicy: OnFailure

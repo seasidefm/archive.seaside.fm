@@ -13,9 +13,9 @@ tag:
 build-arm: ready
 	docker buildx build --platform linux/arm64 --push \
 		-t registry.dougflynn.dev/seaside-archives \
-		-f docker/prod.Dockerfile .
+		-f docker/Dockerfile.prod .
 
 publish: build-arm
 	echo Waiting a few seconds for docker image to upload...
-	#sleep 10
-	#kubectl rollout restart deployment -n botsuro seaside-archives-deployment
+	sleep 10
+	kubectl rollout restart deployment -n seasidefm archives
