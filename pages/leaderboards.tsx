@@ -15,7 +15,7 @@ const LeaderboardsPage: NextPage = () => {
         return res.data;
     });
     return (
-        <MainLayout>
+        <MainLayout disableLoadingScreen>
             <div className="container p-5">
                 <h1 className={"title mt-5"}>Song Collector Leaderboard</h1>
                 <p>

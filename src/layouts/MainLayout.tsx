@@ -63,7 +63,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                             "is-flex is-align-items-center is-justify-content-center"
                         }
                     >
-                        Loading page info...
+                        Checking for existing Twitch data...
                     </div>
                 ) : (
                     children
