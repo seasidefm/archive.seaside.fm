@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import { MainLayout } from "../src/layouts/MainLayout";
-import { useUserState } from "../src/context/UserContext";
 import { useQuery } from "react-query";
 
 type MostFavedResponse = [
@@ -8,7 +7,6 @@ type MostFavedResponse = [
 ];
 
 const LeaderboardsPage: NextPage = () => {
-    const { user } = useUserState();
     const { data, isLoading } = useQuery<MostFavedResponse>(
         ["favorites"],
         async () => {
@@ -20,7 +18,7 @@ const LeaderboardsPage: NextPage = () => {
         }
     );
     return (
-        <MainLayout>
+        <MainLayout disableLoadingScreen>
             {/*<>{!isLoading && JSON.stringify(data[0].songs)}</>*/}
             <div className="container p-5">
                 <h1 className={"title mt-5"}>Favorite Song Leaderboard</h1>
@@ -61,20 +59,10 @@ const LeaderboardsPage: NextPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {user && isLoading && (
+                            {isLoading && (
                                 <tr>
                                     <td colSpan={4}>
                                         <div>Loading leaderboard...</div>
-                                    </td>
-                                </tr>
-                            )}
-                            {!user && (
-                                <tr>
-                                    <td colSpan={4}>
-                                        <div>
-                                            Please login to see your saved
-                                            songs!
-                                        </div>
                                     </td>
                                 </tr>
                             )}

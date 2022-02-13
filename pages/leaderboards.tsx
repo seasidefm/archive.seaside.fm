@@ -1,10 +1,8 @@
 import { NextPage } from "next";
 import { MainLayout } from "../src/layouts/MainLayout";
-import { useUserState } from "../src/context/UserContext";
 import { useQuery } from "react-query";
 
 const LeaderboardsPage: NextPage = () => {
-    const { user } = useUserState();
     const { data, isLoading } = useQuery<
         Array<{ user: string; numberOfSongs: number }>
     >(["favorites"], async () => {
@@ -52,20 +50,10 @@ const LeaderboardsPage: NextPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {user && isLoading && (
+                            {isLoading && (
                                 <tr>
                                     <td colSpan={4}>
                                         <div>Loading leaderboard...</div>
-                                    </td>
-                                </tr>
-                            )}
-                            {!user && (
-                                <tr>
-                                    <td colSpan={4}>
-                                        <div>
-                                            Please login to see your saved
-                                            songs!
-                                        </div>
                                     </td>
                                 </tr>
                             )}

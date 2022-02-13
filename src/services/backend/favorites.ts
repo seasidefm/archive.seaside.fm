@@ -4,7 +4,7 @@ export class Favorites {
     async getMostFaved() {
         const favorites = await getFavoritesModel();
         //https://stackoverflow.com/questions/34089056/count-array-occurrences-across-all-documents-with-mongoa
-        const leaderboard = await favorites
+        return await favorites
             .aggregate([
                 {
                     $match: {
@@ -63,14 +63,10 @@ export class Favorites {
                 },
             ])
             .exec();
-
-        console.log(leaderboard);
-
-        return leaderboard;
     }
     async getFavoritesLeaderboard() {
         const favorites = await getFavoritesModel();
-        const leaderboard = await favorites
+        return await favorites
             .aggregate([
                 {
                     $match: {
@@ -97,10 +93,6 @@ export class Favorites {
                 },
             ])
             .exec();
-
-        console.log(leaderboard);
-
-        return leaderboard;
     }
     async getFavoriteSongs(user: string) {
         const favorites = await getFavoritesModel();
