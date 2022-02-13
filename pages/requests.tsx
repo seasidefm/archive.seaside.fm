@@ -13,6 +13,10 @@ function formatYoutubeLink(artist: string, song: string) {
     )}+${song.replace(" ", "+")}`;
 }
 
+function getDateString(date?: string | number | Date) {
+    return date ? moment(date).format("ddd, MMM D, YYYY") : "N/A";
+}
+
 const RequestsPage: NextPage = () => {
     const { user } = useUserState();
     const { data, isLoading } = useQuery<Array<IRequest>>(
@@ -25,6 +29,7 @@ const RequestsPage: NextPage = () => {
             return res.data;
         }
     );
+
     return (
         <MainLayout>
             <div className="container p-5">
@@ -100,19 +105,9 @@ const RequestsPage: NextPage = () => {
                                         <td>{artist}</td>
                                         <td>{song_title}</td>
                                         <td>
-                                            {request_date
-                                                ? moment(request_date).format(
-                                                      "DD MMMM, YYYY"
-                                                  )
-                                                : "N/A"}
+                                            {getDateString(request_date * 1000)}
                                         </td>{" "}
-                                        <td>
-                                            {stream_date
-                                                ? moment(request_date).format(
-                                                      "DD MMMM, YYYY"
-                                                  )
-                                                : "N/A"}
-                                        </td>
+                                        <td>{getDateString(stream_date)}</td>
                                         <td>
                                             <div
                                                 style={{

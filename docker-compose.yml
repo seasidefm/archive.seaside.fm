@@ -3,7 +3,7 @@ services:
   archive-ui:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: docker/Dockerfile.dev
     volumes:
       - ./:/app
       # This is just to ignore local dev machine node_modules

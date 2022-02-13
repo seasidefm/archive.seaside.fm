@@ -4,7 +4,7 @@ import { MainLayout } from "../src/layouts/MainLayout";
 
 const Home: NextPage = () => {
     return (
-        <MainLayout>
+        <MainLayout disableLoadingScreen>
             <div
                 style={{
                     height: "100%",
@@ -16,6 +16,7 @@ const Home: NextPage = () => {
                     width={1920}
                     height={1080}
                     layout={"responsive"}
+                    alt={"seasidefm stream"}
                 />
 
                 {/*<div className="column is-flex is-flex-direction-column">*/}

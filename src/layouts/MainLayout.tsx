@@ -6,7 +6,14 @@ import { useUserState } from "../context/UserContext";
 import { TwitchUser } from "../structures/twitch";
 import moment from "moment";
 
-export const MainLayout: React.FC = ({ children }) => {
+interface MainLayoutProps {
+    disableLoadingScreen?: boolean;
+}
+
+export const MainLayout: React.FC<MainLayoutProps> = ({
+    children,
+    disableLoadingScreen,
+}) => {
     const userState = useUserState();
     const { isLoading } = useQuery(["user-info"], async () => {
         const res = await fetch("/api/user/info", {
@@ -47,7 +54,7 @@ export const MainLayout: React.FC = ({ children }) => {
                 }}
             >
                 <Navbar />
-                {isLoading && !userState.user ? (
+                {!disableLoadingScreen && isLoading && !userState.user ? (
                     <div
                         style={{
                             height: "100%",
@@ -65,7 +72,9 @@ export const MainLayout: React.FC = ({ children }) => {
             <footer className="footer mt-auto">
                 <div className="content has-text-centered">
                     <p>
-                        <strong>Copyright SeasideFM {moment().year()}</strong>
+                        <strong>
+                            Copyright SeasideFM 2021-{moment().format("YY")}
+                        </strong>
                     </p>
                     <p>
                         <strong>Video content</strong> created under Fair Use
