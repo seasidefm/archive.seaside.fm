@@ -1,6 +1,7 @@
 import { NextPage } from "next";
 import { MainLayout } from "../src/layouts/MainLayout";
 import { useQuery } from "react-query";
+import { SeasideApi } from "../src/services/backend/seaside-api";
 
 const LeaderboardsPage: NextPage = () => {
     const { data, isLoading } = useQuery<
@@ -12,9 +13,27 @@ const LeaderboardsPage: NextPage = () => {
 
         return res.data;
     });
+
+    const {
+        data: d,
+        isLoading: l,
+        error,
+    } = useQuery<
+        Array<{
+            _count: { favorites: number };
+            name: string;
+        }>,
+        string
+    >(["fave-leaderboard"], async () => {
+        const api = new SeasideApi();
+
+        return await api.getLeaderboard();
+    });
+
     return (
         <MainLayout disableLoadingScreen>
             <div className="container p-5">
+                {error && <pre>{error}</pre>}
                 <h1 className={"title mt-5"}>Song Collector Leaderboard</h1>
                 <p>
                     To add more favorites, use <code>?fave</code> during the
@@ -57,12 +76,12 @@ const LeaderboardsPage: NextPage = () => {
                                     </td>
                                 </tr>
                             )}
-                            {data?.map((entry, index) => {
+                            {d?.map((entry, index) => {
                                 return (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{entry.user}</td>
-                                        <td>{entry.numberOfSongs}</td>
+                                        <td>{entry.name}</td>
+                                        <td>{entry._count.favorites}</td>
                                     </tr>
                                 );
                             })}
