@@ -1,28 +1,19 @@
+import { ApiBaseService } from "./apiBaseService";
+
 type UserFavoritesLeaderboard = Array<{
     _count: { favorites: number };
     name: string;
 }>;
 
-export class SeasideApi {
-    private readonly endpoint: string;
-    private readonly routes = {
-        FaveLeaderboard: "/leaderboard/favorites",
-    };
-
+export class LeaderboardService extends ApiBaseService {
     constructor() {
-        const endpoint = process.env.NEXT_PUBLIC_SEASIDE_API_URI;
-
-        if (!endpoint) {
-            throw new Error("Cannot find SEASIDE_API_URI in env!");
-        }
-
-        this.endpoint = endpoint;
+        super({
+            FaveLeaderboard: "/leaderboard/favorites",
+        });
     }
 
-    private prependEndpoint(route: string) {
-        return `${this.endpoint}${route}`;
-    }
-
+    // Leaderboards
+    // ====================================
     public async getLeaderboard(): Promise<UserFavoritesLeaderboard> {
         console.info("this is actually calling");
         const res = await fetch(

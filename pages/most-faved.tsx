@@ -1,12 +1,33 @@
 import { NextPage } from "next";
 import { MainLayout } from "../src/layouts/MainLayout";
 import { useQuery } from "react-query";
+import { Table, TableColumn } from "../src/components/Table";
+import { useMemo } from "react";
 
 type MostFavedResponse = [
     { _id: "songs"; songs: Array<{ name: string; faveCount: number }> }
 ];
 
-const LeaderboardsPage: NextPage = () => {
+const MostFavedColumns: TableColumn[] = [
+    {
+        column: "place",
+        displayName: "Place",
+    },
+    {
+        column: "artist",
+        displayName: "Artist",
+    },
+    {
+        column: "song",
+        displayName: "Song",
+    },
+    {
+        column: "faves",
+        displayName: "Favorites",
+    },
+];
+
+const MostFavedPage: NextPage = () => {
     const { data, isLoading } = useQuery<MostFavedResponse>(
         ["favorites"],
         async () => {
@@ -17,6 +38,21 @@ const LeaderboardsPage: NextPage = () => {
             return res.data;
         }
     );
+
+    const rows = useMemo(() => {
+        return data
+            ? data[0].songs.map((s, i) => {
+                  const [artist, song] = s.name.split("-").map((e) => e.trim());
+                  return {
+                      place: i + 1,
+                      artist,
+                      song,
+                      faves: s.faveCount,
+                  };
+              })
+            : [];
+    }, [data]);
+
     return (
         <MainLayout disableLoadingScreen>
             {/*<>{!isLoading && JSON.stringify(data[0].songs)}</>*/}
@@ -36,55 +72,15 @@ const LeaderboardsPage: NextPage = () => {
                         overflow: "auto",
                     }}
                 >
-                    <table
-                        className="table"
-                        style={{
-                            width: "100%",
-                        }}
-                    >
-                        <thead>
-                            <tr>
-                                <td>
-                                    <strong>Place</strong>
-                                </td>
-                                <td>
-                                    <strong>Artist</strong>
-                                </td>
-                                <td>
-                                    <strong>Song</strong>
-                                </td>
-                                <td>
-                                    <strong>Faves</strong>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {isLoading && (
-                                <tr>
-                                    <td colSpan={4}>
-                                        <div>Loading leaderboard...</div>
-                                    </td>
-                                </tr>
-                            )}
-                            {data &&
-                                data[0].songs.map((entry, index) => {
-                                    const [artist, song] =
-                                        entry.name.split(" - ");
-                                    return (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{artist}</td>
-                                            <td>{song}</td>
-                                            <td>{entry.faveCount}</td>
-                                        </tr>
-                                    );
-                                })}
-                        </tbody>
-                    </table>
+                    <Table
+                        loading={isLoading}
+                        columns={MostFavedColumns}
+                        rows={rows}
+                    />
                 </div>
             </div>
         </MainLayout>
     );
 };
 
-export default LeaderboardsPage;
+export default MostFavedPage;

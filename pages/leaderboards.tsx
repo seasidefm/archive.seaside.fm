@@ -1,19 +1,26 @@
 import { NextPage } from "next";
 import { MainLayout } from "../src/layouts/MainLayout";
 import { useQuery } from "react-query";
-import { SeasideApi } from "../src/services/backend/seaside-api";
+import { LeaderboardService } from "../src/services/ui/LeaderboardService";
+import { Table, TableColumn } from "../src/components/Table";
+import { useMemo } from "react";
+
+const LeaderboardColumns: TableColumn[] = [
+    {
+        column: "place",
+        displayName: "Place",
+    },
+    {
+        column: "user",
+        displayName: "User",
+    },
+    {
+        column: "songs",
+        displayName: "Song Number",
+    },
+];
 
 const LeaderboardsPage: NextPage = () => {
-    const { data, isLoading } = useQuery<
-        Array<{ user: string; numberOfSongs: number }>
-    >(["favorites"], async () => {
-        const res = await fetch("/api/leaderboards", {
-            method: "GET",
-        }).then((r) => r.json());
-
-        return res.data;
-    });
-
     const {
         data: d,
         isLoading: l,
@@ -25,10 +32,22 @@ const LeaderboardsPage: NextPage = () => {
         }>,
         string
     >(["fave-leaderboard"], async () => {
-        const api = new SeasideApi();
+        const api = new LeaderboardService();
 
         return await api.getLeaderboard();
     });
+
+    const rows = useMemo(() => {
+        const formatted = d?.map((user, i) => {
+            return {
+                place: i + 1,
+                user: user.name,
+                songs: user._count.favorites,
+            };
+        });
+
+        return formatted || [];
+    }, [d]);
 
     return (
         <MainLayout disableLoadingScreen>
@@ -49,44 +68,11 @@ const LeaderboardsPage: NextPage = () => {
                         overflow: "auto",
                     }}
                 >
-                    <table
-                        className="table"
-                        style={{
-                            width: "100%",
-                        }}
-                    >
-                        <thead>
-                            <tr>
-                                <td>
-                                    <strong>Place</strong>
-                                </td>
-                                <td>
-                                    <strong>User</strong>
-                                </td>
-                                <td>
-                                    <strong>Song Number</strong>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {isLoading && (
-                                <tr>
-                                    <td colSpan={4}>
-                                        <div>Loading leaderboard...</div>
-                                    </td>
-                                </tr>
-                            )}
-                            {d?.map((entry, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>{entry.name}</td>
-                                        <td>{entry._count.favorites}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                    <Table
+                        loading={l}
+                        columns={LeaderboardColumns}
+                        rows={rows}
+                    />
                 </div>
             </div>
         </MainLayout>
