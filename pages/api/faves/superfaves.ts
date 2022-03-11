@@ -7,7 +7,7 @@ export default async function handler(
 ) {
     const { user } = req.query;
     const response = await fetch(
-        `https://api.seaside.fm/faves/user?user_id=${user}`,
+        `https://api.seaside.fm/superfaves?user_id=${user}`,
         {
             method: "GET",
         }

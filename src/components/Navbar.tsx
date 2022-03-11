@@ -34,7 +34,7 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
                         <Link href={"/favorites"}>
                             <a className="navbar-item">My Saved Songs</a>
                         </Link>
-                        <Link href={"/super-faves"}>
+                        <Link href={"/superfaves"}>
                             <a className="navbar-item">My Superfave Songs</a>
                         </Link>
                         <hr className="navbar-divider" />
