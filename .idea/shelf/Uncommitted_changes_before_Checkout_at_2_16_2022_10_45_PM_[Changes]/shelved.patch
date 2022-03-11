@@ -1,0 +1,183 @@
+Index: .idea/jsLibraryMappings.xml
+===================================================================
+diff --git a/.idea/jsLibraryMappings.xml b/.idea/jsLibraryMappings.xml
+deleted file mode 100644
+--- a/.idea/jsLibraryMappings.xml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ /dev/null	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
+@@ -1,6 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="JavaScriptLibraryMappings">
+-    <file url="PROJECT" libraries="{bulma}" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/.gitignore
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+deleted file mode 100644
+--- a/.idea/.gitignore	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ /dev/null	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
+@@ -1,5 +0,0 @@
+-# Default ignored files
+-/shelf/
+-/workspace.xml
+-# Editor-based HTTP Client requests
+-/httpRequests/
+Index: .idea/prettier.xml
+===================================================================
+diff --git a/.idea/prettier.xml b/.idea/prettier.xml
+deleted file mode 100644
+--- a/.idea/prettier.xml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ /dev/null	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
+@@ -1,7 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="PrettierConfiguration">
+-    <option name="myRunOnSave" value="true" />
+-    <option name="myRunOnReformat" value="true" />
+-  </component>
+-</project>
+\ No newline at end of file
+Index: .idea/codeStyles/codeStyleConfig.xml
+===================================================================
+diff --git a/.idea/codeStyles/codeStyleConfig.xml b/.idea/codeStyles/codeStyleConfig.xml
+deleted file mode 100644
+--- a/.idea/codeStyles/codeStyleConfig.xml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ /dev/null	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
+@@ -1,5 +0,0 @@
+-<component name="ProjectCodeStyleConfiguration">
+-  <state>
+-    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
+-  </state>
+-</component>
+\ No newline at end of file
+Index: .idea/codeStyles/Project.xml
+===================================================================
+diff --git a/.idea/codeStyles/Project.xml b/.idea/codeStyles/Project.xml
+deleted file mode 100644
+--- a/.idea/codeStyles/Project.xml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ /dev/null	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
+@@ -1,47 +0,0 @@
+-<component name="ProjectCodeStyleConfiguration">
+-  <code_scheme name="Project" version="173">
+-    <HTMLCodeStyleSettings>
+-      <option name="HTML_SPACE_INSIDE_EMPTY_TAG" value="true" />
+-      <option name="HTML_ENFORCE_QUOTES" value="true" />
+-    </HTMLCodeStyleSettings>
+-    <JSCodeStyleSettings version="0">
+-      <option name="FORCE_SEMICOLON_STYLE" value="true" />
+-      <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
+-      <option name="FORCE_QUOTE_STYlE" value="true" />
+-      <option name="ENFORCE_TRAILING_COMMA" value="Remove" />
+-      <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
+-      <option name="SPACES_WITHIN_IMPORTS" value="true" />
+-    </JSCodeStyleSettings>
+-    <TypeScriptCodeStyleSettings version="0">
+-      <option name="FORCE_SEMICOLON_STYLE" value="true" />
+-      <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
+-      <option name="FORCE_QUOTE_STYlE" value="true" />
+-      <option name="ENFORCE_TRAILING_COMMA" value="Remove" />
+-      <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
+-      <option name="SPACES_WITHIN_IMPORTS" value="true" />
+-    </TypeScriptCodeStyleSettings>
+-    <VueCodeStyleSettings>
+-      <option name="INTERPOLATION_NEW_LINE_AFTER_START_DELIMITER" value="false" />
+-      <option name="INTERPOLATION_NEW_LINE_BEFORE_END_DELIMITER" value="false" />
+-    </VueCodeStyleSettings>
+-    <codeStyleSettings language="HTML">
+-      <option name="SOFT_MARGINS" value="80" />
+-      <indentOptions>
+-        <option name="CONTINUATION_INDENT_SIZE" value="4" />
+-      </indentOptions>
+-    </codeStyleSettings>
+-    <codeStyleSettings language="JavaScript">
+-      <option name="SOFT_MARGINS" value="80" />
+-    </codeStyleSettings>
+-    <codeStyleSettings language="TypeScript">
+-      <option name="SOFT_MARGINS" value="80" />
+-    </codeStyleSettings>
+-    <codeStyleSettings language="Vue">
+-      <option name="SOFT_MARGINS" value="80" />
+-      <indentOptions>
+-        <option name="INDENT_SIZE" value="4" />
+-        <option name="TAB_SIZE" value="4" />
+-      </indentOptions>
+-    </codeStyleSettings>
+-  </code_scheme>
+-</component>
+\ No newline at end of file
+Index: .idea/runConfigurations/Run_Dev_Server.xml
+===================================================================
+diff --git a/.idea/runConfigurations/Run_Dev_Server.xml b/.idea/runConfigurations/Run_Dev_Server.xml
+deleted file mode 100644
+--- a/.idea/runConfigurations/Run_Dev_Server.xml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ /dev/null	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
+@@ -1,12 +0,0 @@
+-<component name="ProjectRunConfigurationManager">
+-  <configuration default="false" name="Run Dev Server" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+-    <deployment type="docker-compose.yml">
+-      <settings>
+-        <option name="envFilePath" value="" />
+-        <option name="sourceFilePath" value="docker-compose.yml" />
+-        <option name="upDetach" value="false" />
+-      </settings>
+-    </deployment>
+-    <method v="2" />
+-  </configuration>
+-</component>
+\ No newline at end of file
+Index: .idea/archive.seaside.fm.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module type=\"WEB_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\">\n    <content url=\"file://$MODULE_DIR$\">\n      <excludeFolder url=\"file://$MODULE_DIR$/temp\" />\n      <excludeFolder url=\"file://$MODULE_DIR$/.tmp\" />\n      <excludeFolder url=\"file://$MODULE_DIR$/tmp\" />\n    </content>\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n    <orderEntry type=\"library\" name=\"bulma\" level=\"application\" />\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/archive.seaside.fm.iml b/.idea/archive.seaside.fm.iml
+--- a/.idea/archive.seaside.fm.iml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ b/.idea/archive.seaside.fm.iml	(date 1645069387885)
+@@ -8,6 +8,5 @@
+     </content>
+     <orderEntry type="inheritedJdk" />
+     <orderEntry type="sourceFolder" forTests="false" />
+-    <orderEntry type="library" name="bulma" level="application" />
+   </component>
+ </module>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ProjectModuleManager\">\n    <modules>\n      <module fileurl=\"file://$PROJECT_DIR$/.idea/archive.seaside.fm.iml\" filepath=\"$PROJECT_DIR$/.idea/archive.seaside.fm.iml\" />\n    </modules>\n  </component>\n</project>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+--- a/.idea/modules.xml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ b/.idea/modules.xml	(date 1645069387905)
+@@ -5,4 +5,4 @@
+       <module fileurl="file://$PROJECT_DIR$/.idea/archive.seaside.fm.iml" filepath="$PROJECT_DIR$/.idea/archive.seaside.fm.iml" />
+     </modules>
+   </component>
+-</project>
++</project>
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"VcsDirectoryMappings\">\n    <mapping directory=\"\" vcs=\"Git\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+--- a/.idea/vcs.xml	(revision c70b491311a584d4b2a7c9f795eb4a2a83164c7f)
++++ b/.idea/vcs.xml	(date 1645069387975)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="VcsDirectoryMappings">
+-    <mapping directory="" vcs="Git" />
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+   </component>
+ </project>
+\ No newline at end of file

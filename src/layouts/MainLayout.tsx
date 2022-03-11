@@ -63,7 +63,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                             "is-flex is-align-items-center is-justify-content-center"
                         }
                     >
-                        Checking for existing Twitch data...
+                        Checking for existing Twitch user data...
                     </div>
                 ) : (
                     children

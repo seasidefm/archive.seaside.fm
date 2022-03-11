@@ -7,7 +7,7 @@ export interface IFavorite {
     user: string;
     songs: Array<{
         song: string;
-        date: number;
+        timestamp: string;
         deleted?: boolean;
     }>;
 }

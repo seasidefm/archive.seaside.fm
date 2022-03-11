@@ -19,24 +19,6 @@ function formatYoutubeLink(artist: string, song: string) {
     )}+${song.replace(" ", "+")}`;
 }
 
-const testSongs: Array<FavoriteSong> = [
-    {
-        favoriteDate: Date.now(),
-        artist: "Tatsuro Yamashita",
-        song: "Ride on Time",
-    },
-    {
-        favoriteDate: Date.now(),
-        artist: "Tatsuro Yamashita",
-        song: "Ride on Time",
-    },
-    {
-        favoriteDate: Date.now(),
-        artist: "Tatsuro Yamashita",
-        song: "Ride on Time",
-    },
-];
-
 const FavoritesPage: NextPage = () => {
     const { user } = useUserState();
     const {
@@ -44,7 +26,7 @@ const FavoritesPage: NextPage = () => {
         isLoading,
         refetch: refetchSongs,
     } = useQuery<IFavorite["songs"]>(["favorites"], async () => {
-        const res = await fetch("/api/user/favorites", {
+        const res = await fetch("/api/faves/user-faves", {
             method: "GET",
         }).then((r) => r.json());
 
@@ -56,6 +38,12 @@ const FavoritesPage: NextPage = () => {
                 <h1 className={"title mt-5"}>Your Favorite Songs</h1>
                 <p>
                     To add more, use <code>?fave</code> during the stream!
+                </p>
+                <p className={"mt-5"}>
+                    <b>
+                        Songs are currently sorted newest to oldest. Sort +
+                        search are in the works :)
+                    </b>
                 </p>
                 <br />
                 <p className={"is-hidden-desktop mt-1 mb-2"}>
@@ -147,9 +135,9 @@ const FavoritesPage: NextPage = () => {
                                                     "is-flex is-align-items-center"
                                                 }
                                             >
-                                                {moment(
-                                                    entry.date * 1000
-                                                ).format("HH:mm DD MMMM, YYYY")}
+                                                {moment(entry.timestamp).format(
+                                                    "HH:mm DD MMMM, YYYY"
+                                                )}
                                             </div>
                                         </td>
                                         <td>

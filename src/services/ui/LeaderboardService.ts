@@ -15,7 +15,6 @@ export class LeaderboardService extends ApiBaseService {
     // Leaderboards
     // ====================================
     public async getLeaderboard(): Promise<UserFavoritesLeaderboard> {
-        console.info("this is actually calling");
         const res = await fetch(
             this.prependEndpoint(this.routes.FaveLeaderboard),
             {

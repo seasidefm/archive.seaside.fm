@@ -44,9 +44,9 @@ export const GDPRModalProvider: React.FC = ({ children }) => {
                         <h3 className="title is-4">GDPR/Cookie Consent</h3>
                         <p>
                             This site uses <strong>functional</strong> cookies
-                            only. We only save your Twitch login{" "}
-                            <i>in your browser</i> as long as your browser is
-                            open! (Session cookie)
+                            only. We do save technical details such as access tokens
+                            that Twitch provides, but if you revoke access to this
+                            application, all of that becomes junk data (a good thing).
                         </p>
                         <br />
                         <p>
