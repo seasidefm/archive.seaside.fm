@@ -3,9 +3,11 @@ import { Model, Schema } from "mongoose";
 import { DatabaseModels } from "./model";
 
 export interface IFavorite {
-    _id?: string;
     user: string;
     songs: Array<{
+        _id: {
+            $oid: string;
+        };
         song: string;
         timestamp: string;
         deleted?: boolean;

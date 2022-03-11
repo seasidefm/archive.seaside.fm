@@ -191,7 +191,12 @@ const FavoritesPage: NextPage = () => {
                                                             {
                                                                 method: "POST",
                                                                 body: JSON.stringify(
-                                                                    entry
+                                                                    {
+                                                                        fave_id:
+                                                                            entry
+                                                                                ._id
+                                                                                .$oid,
+                                                                    }
                                                                 ),
                                                                 headers: {
                                                                     "Content-Type":
