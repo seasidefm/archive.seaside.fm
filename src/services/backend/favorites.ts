@@ -64,6 +64,7 @@ export class Favorites {
             ])
             .exec();
     }
+
     async getFavoritesLeaderboard() {
         const favorites = await getFavoritesModel();
         return await favorites
@@ -94,6 +95,7 @@ export class Favorites {
             ])
             .exec();
     }
+
     async getFavoriteSongs(user: string) {
         const favorites = await getFavoritesModel();
         const results = await favorites.find({ user: { $eq: user } });
@@ -102,6 +104,7 @@ export class Favorites {
 
         return favoritesObject.toJSON().songs;
     }
+
     async deleteFavorite(user: string, song: string) {
         const favorites = await getFavoritesModel();
         const results = await favorites.updateOne(
@@ -109,7 +112,7 @@ export class Favorites {
             { $pull: { songs: { song } } }
         );
 
-        console.info(results);
+        console.info("delete", results);
 
         return true;
     }

@@ -25,13 +25,23 @@ const FavoritesPage: NextPage = () => {
         data,
         isLoading,
         refetch: refetchSongs,
-    } = useQuery<IFavorite["songs"]>(["favorites"], async () => {
-        const res = await fetch("/api/faves/user-faves", {
-            method: "GET",
-        }).then((r) => r.json());
+    } = useQuery<IFavorite["songs"]>(
+        ["favorites", { userId: user?.id }],
+        async ({ queryKey }) => {
+            const userId = (queryKey[1] as { userId?: number }).userId;
+            if (userId) {
+                const res = await fetch(
+                    `/api/faves/user-faves?user=${userId}`,
+                    {
+                        method: "GET",
+                    }
+                ).then((r) => r.json());
 
-        return res.data;
-    });
+                return res.data;
+            }
+            return [];
+        }
+    );
     return (
         <MainLayout>
             <div className="container p-5">
