@@ -32,12 +32,9 @@ const FavoritesPage: NextPage = () => {
             const userId = (queryKey[1] as { userId?: number }).userId;
             if (userId) {
                 console.log(userId);
-                const res = await fetch(
-                    `/api/faves/superfaves?user=${userId}`,
-                    {
-                        method: "GET",
-                    }
-                ).then((r) => r.json());
+                const res = await fetch(`/api/superfaves?user=${userId}`, {
+                    method: "GET",
+                }).then((r) => r.json());
 
                 return res.data;
             }
