@@ -2,6 +2,7 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { MainLayout } from "../src/layouts/MainLayout";
 import { useUserState } from "../src/context/UserContext";
+import { formatYoutubeLink } from "../src/utils/utlFormat.ts";
 import { useQuery } from "react-query";
 import { IFavorite } from "../src/services/backend/database/Favorite.model";
 import moment from "moment";
@@ -10,13 +11,6 @@ interface FavoriteSong {
     favoriteDate: number;
     artist: string;
     song: string;
-}
-
-function formatYoutubeLink(artist: string, song: string) {
-    return `https://www.youtube.com/results?search_query=${artist.replace(
-        " ",
-        "+"
-    )}+${song.replace(" ", "+")}`;
 }
 
 const FavoritesPage: NextPage = () => {

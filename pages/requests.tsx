@@ -1,17 +1,11 @@
 import { NextPage } from "next";
 import { MainLayout } from "../src/layouts/MainLayout";
 import { useUserState } from "../src/context/UserContext";
+import { formatYoutubeLink } from "../src/utils/utlFormat.ts";
 import { useQuery } from "react-query";
 import moment from "moment";
 import { IRequest } from "../src/services/backend/database/Request.model";
 import Link from "next/link";
-
-function formatYoutubeLink(artist: string, song: string) {
-    return `https://www.youtube.com/results?search_query=${artist.replace(
-        " ",
-        "+"
-    )}+${song.replace(" ", "+")}`;
-}
 
 function getDateString(date?: string | number | Date) {
     return date ? moment(date).format("ddd, MMM D, YYYY") : "N/A";
