@@ -5,6 +5,7 @@ import { useUserState } from "../src/context/UserContext";
 import { useQuery } from "react-query";
 import { IFavorite } from "../src/services/backend/database/Favorite.model";
 import moment from "moment";
+import { deleteFavorite } from "../src/utils/deleteFavorite";
 
 interface FavoriteSong {
     favoriteDate: number;
@@ -185,22 +186,13 @@ const FavoritesPage: NextPage = () => {
                                                 }
                                             >
                                                 <a
-                                                    onClick={async () => {
-                                                        await fetch(
-                                                            "/api/user/remove-favorite",
-                                                            {
-                                                                method: "POST",
-                                                                body: JSON.stringify(
-                                                                    entry
-                                                                ),
-                                                                headers: {
-                                                                    "Content-Type":
-                                                                        "application/json",
-                                                                },
-                                                            }
-                                                        );
-                                                        await refetchSongs();
-                                                    }}
+                                                    onClick={async () =>
+                                                        await deleteFavorite(
+                                                            entry._id.$oid,
+                                                            refetchSongs,
+                                                            true
+                                                        )
+                                                    }
                                                     type={"button"}
                                                     className={
                                                         "has-text-danger"

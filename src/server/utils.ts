@@ -6,6 +6,14 @@ import {
 import { TwitchTokenData } from "../structures/twitch";
 import { NextApiRequest, NextApiResponse } from "next";
 
+export const getAuthHeaders = () => ({
+    Authorization: process.env.SEASIDE_API_KEY || "",
+});
+
+export const getJSONHeaders = () => ({
+    "Content-Type": "application/json",
+});
+
 const getUsername = async function (accessToken: string) {
     return await tryValidation(accessToken);
 };

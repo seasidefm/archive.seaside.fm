@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { withTwitchVerification } from "../../../src/server/utils";
+import {
+    getAuthHeaders,
+    getJSONHeaders,
+    withTwitchVerification,
+} from "../../../src/server/utils";
 
 export default async function handler(
     req: NextApiRequest,
@@ -9,6 +13,7 @@ export default async function handler(
 
     await withTwitchVerification(req, res, async (user_id) => {
         const response = await fetch("https://api.seaside.fm/superfaves", {
+            headers: { ...getAuthHeaders(), ...getJSONHeaders() },
             method: "DELETE",
             body: JSON.stringify({
                 user_id,
