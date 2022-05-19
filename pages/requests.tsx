@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { MainLayout } from "../src/layouts/MainLayout";
 import { useUserState } from "../src/context/UserContext";
-import { formatYoutubeLink } from "../src/utils/utlFormat.ts";
+import { formatYoutubeLink } from "../src/utils/utlFormat";
 import { useQuery } from "react-query";
 import moment from "moment";
 import { IRequest } from "../src/services/backend/database/Request.model";

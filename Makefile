@@ -4,9 +4,6 @@ install:
 dev: install
 	yarn dev
 
-ready:
-    docker run --rm --privileged linuxkit/binfmt:v0.8
-
 tag:
 	docker tag seaside-archives registry.dougflynn.dev/seaside-archives .
 
@@ -15,7 +12,12 @@ build-arm: ready
 		-t registry.dougflynn.dev/seaside-archives \
 		-f docker/Dockerfile.prod .
 
-publish: build-arm
+build:
+	docker buildx build --platform linux/arm64 --push \
+		-t registry.dougflynn.dev/seaside-archives \
+		-f docker/Dockerfile.prod .
+
+publish: build
 	echo Waiting a few seconds for docker image to upload...
 	sleep 10
 	kubectl rollout restart deployment -n seasidefm archives
