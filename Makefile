@@ -13,8 +13,8 @@ build-arm: ready
 		-f docker/Dockerfile.prod .
 
 build:
-	docker buildx build --platform linux/arm64 --push \
-		-t registry.dougflynn.dev/seaside-archives \
+	docker build \
+		-t redbirddigital/seaside-archives \
 		-f docker/Dockerfile.prod .
 
 publish: build
