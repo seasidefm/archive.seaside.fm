@@ -20,7 +20,7 @@ spec:
         - name: regcred
       containers:
         - name: archives
-          image: registry.dougflynn.dev/seaside-archives
+          image: redbirddigital/seaside-archives
           ports:
             - containerPort: 3000
           imagePullPolicy: Always
@@ -58,29 +58,3 @@ spec:
     - name: web-port
       port: 80
       targetPort: 3000
----
-kind: Ingress
-apiVersion: networking.k8s.io/v1
-metadata:
-  namespace: seasidefm
-  name: archive-entrypoint
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
-spec:
-  rules:
-    - host: archive.seaside.fm
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: archives
-                port:
-                  number: 80
-  tls:
-    - secretName: archive-tls
-      hosts:
-        - archive.seaside.fm

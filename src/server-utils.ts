@@ -113,7 +113,7 @@ export async function withRefreshRetry<T, E extends string>({
         }
         return {
             status: 500,
-            error: "Could not properly interface with Twitch",
+            error: "Could not properly user with Twitch",
         };
     }
 

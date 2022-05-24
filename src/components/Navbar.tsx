@@ -21,9 +21,9 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
                 {/*<Link href={"/privacy"}>*/}
                 {/*    <a className="navbar-item">Privacy</a>*/}
                 {/*</Link>*/}
-                <Link href={"/leaderboards"}>
+                {/*                <Link href={"/leaderboards"}>
                     <a className="navbar-item">Leaderboards</a>
-                </Link>
+                </Link>*/}
                 <div className="navbar-item has-dropdown is-hoverable">
                     <a className="navbar-link">My SeasideFM</a>
 
@@ -33,6 +33,9 @@ const NavLinks: React.FC<{ user?: UserState["user"] }> = ({ user }) => {
                         </Link>
                         <Link href={"/favorites"}>
                             <a className="navbar-item">My Saved Songs</a>
+                        </Link>
+                        <Link href={"/superfaves"}>
+                            <a className="navbar-item">My Superfave Songs</a>
                         </Link>
                         <hr className="navbar-divider" />
                         <a

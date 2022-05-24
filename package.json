@@ -12,13 +12,15 @@
     "@types/mongoose": "^5.11.97",
     "aws-sdk": "^2.1048.0",
     "cookies": "^0.8.0",
+    "immer": "^9.0.12",
     "moment": "^2.29.2",
     "mongoose": "^6.1.5",
     "next": "12.0.7",
     "node-fetch": "^3.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-query": "^3.34.7"
+    "react-query": "^3.34.7",
+    "zustand": "^3.7.0"
   },
   "devDependencies": {
     "@types/cookies": "^0.7.7",

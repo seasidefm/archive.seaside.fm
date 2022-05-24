@@ -28,11 +28,11 @@ export interface TwitchRefreshResponse {
 }
 
 export interface TwitchValidationResponse {
-    client_id: "wbmytr93xzw8zbg0p1izqyzzc5mbiz";
-    login: "twitchdev";
+    client_id: string;
+    login: string;
     scopes: ["channel:read:subscriptions"];
-    user_id: "141981764";
-    expires_in: 5520838;
+    user_id: string;
+    expires_in: number;
 }
 
 export interface TwitchUserInfoResponse {

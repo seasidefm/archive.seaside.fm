@@ -16,6 +16,7 @@ interface FavoriteSong {
 
 const FavoritesPage: NextPage = () => {
     const { user } = useUserState();
+    console.log(user);
     const {
         data,
         isLoading,
@@ -25,24 +26,23 @@ const FavoritesPage: NextPage = () => {
         async ({ queryKey }) => {
             const userId = (queryKey[1] as { userId?: number }).userId;
             if (userId) {
-                const res = await fetch(
-                    `/api/faves/user-faves?user=${userId}`,
-                    {
-                        method: "GET",
-                    }
-                ).then((r) => r.json());
+                console.log(userId);
+                const res = await fetch(`/api/superfaves?user=${userId}`, {
+                    method: "GET",
+                }).then((r) => r.json());
 
                 return res.data;
             }
             return [];
-        }
+        },
+        {}
     );
     return (
         <MainLayout>
             <div className="container p-5">
-                <h1 className={"title mt-5"}>Your Favorite Songs</h1>
+                <h1 className={"title mt-5"}>Your Superfave Songs</h1>
                 <p>
-                    To add more, use <code>?fave</code> during the stream!
+                    To add more, use <code>?superfave</code> during the stream!
                 </p>
                 <p className={"mt-5"}>
                     <b>
@@ -75,7 +75,7 @@ const FavoritesPage: NextPage = () => {
                                     <strong>Song Title</strong>
                                 </td>
                                 <td>
-                                    <strong>Date Saved</strong>
+                                    <strong>Date Superfaved</strong>
                                 </td>
                                 <td>
                                     <strong>Search Links</strong>
@@ -89,7 +89,7 @@ const FavoritesPage: NextPage = () => {
                             {user && isLoading && (
                                 <tr>
                                     <td colSpan={4}>
-                                        <div>Loading saved songs...</div>
+                                        <div>Loading superfaved songs...</div>
                                     </td>
                                 </tr>
                             )}
@@ -97,7 +97,7 @@ const FavoritesPage: NextPage = () => {
                                 <tr>
                                     <td colSpan={4}>
                                         <div>
-                                            Please login to see your saved
+                                            Please login to see your superfaved
                                             songs!
                                         </div>
                                     </td>
@@ -183,7 +183,8 @@ const FavoritesPage: NextPage = () => {
                                                     onClick={async () =>
                                                         await deleteFavorite(
                                                             entry._id.$oid,
-                                                            refetchSongs
+                                                            refetchSongs,
+                                                            true
                                                         )
                                                     }
                                                     type={"button"}

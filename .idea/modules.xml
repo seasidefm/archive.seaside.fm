@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/archive.seaside.fm.iml" filepath="$PROJECT_DIR$/.idea/archive.seaside.fm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../seaside-db/.idea/seaside-db.iml" filepath="$PROJECT_DIR$/../seaside-db/.idea/seaside-db.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../seaside-sdk/.idea/seaside-sdk.iml" filepath="$PROJECT_DIR$/../seaside-sdk/.idea/seaside-sdk.iml" />
     </modules>
   </component>
 </project>
